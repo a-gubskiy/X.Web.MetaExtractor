@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{483AC3EF-1A72-4790-961C-7E2B5B80DA83}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3DF02813-3F46-4CFA-879E-2B9639F0BD29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaExtractor.Tests", "tests\MetaExtractor.Tests\MetaExtractor.Tests.csproj", "{5A850DD1-2205-4C1A-9200-714EBA5BD08C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaExtractor", "src\MetaExtractor\MetaExtractor.csproj", "{59DAEA87-84F4-4B7F-BBB5-530380403A24}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A850DD1-2205-4C1A-9200-714EBA5BD08C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A850DD1-2205-4C1A-9200-714EBA5BD08C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A850DD1-2205-4C1A-9200-714EBA5BD08C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A850DD1-2205-4C1A-9200-714EBA5BD08C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59DAEA87-84F4-4B7F-BBB5-530380403A24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59DAEA87-84F4-4B7F-BBB5-530380403A24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59DAEA87-84F4-4B7F-BBB5-530380403A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59DAEA87-84F4-4B7F-BBB5-530380403A24}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5A850DD1-2205-4C1A-9200-714EBA5BD08C} = {3DF02813-3F46-4CFA-879E-2B9639F0BD29}
+		{59DAEA87-84F4-4B7F-BBB5-530380403A24} = {483AC3EF-1A72-4790-961C-7E2B5B80DA83}
+	EndGlobalSection
+EndGlobal
