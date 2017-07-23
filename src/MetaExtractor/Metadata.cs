@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 
 namespace MetaExtractor
 {
@@ -10,8 +10,13 @@ namespace MetaExtractor
 
         public string Url { get; set; }
 
-        public string Image { get; set; }
+        public IEnumerable<string> Image { get; set; }
 
         public string Type { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Title}\r\n{Description}\r\n{Url}\r\n{Image}";
+        }
     }
 }

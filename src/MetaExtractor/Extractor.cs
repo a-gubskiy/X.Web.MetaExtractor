@@ -1,11 +1,11 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
 
 namespace MetaExtractor
 {
@@ -15,25 +15,17 @@ namespace MetaExtractor
 
         public async Task<Metadata> Extract(Uri uri)
         {
-            var handler = new HttpClientHandler { AllowAutoRedirect = true };
-
-            var client = new HttpClient(handler);
-
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
-
-            var bytes = await client.GetByteArrayAsync(uri);
-            var html = WebUtility.HtmlDecode(Encoding.UTF8.GetString(bytes));
+            var html = await LoadPageHtml(uri);
 
             var document = new HtmlDocument();
             document.LoadHtml(html);
 
+            //Trye parse Open Graph properties
             var title = ReadOpenGraphProperty(document, "og:title");
             var image = ReadOpenGraphProperty(document, "og:image");
             var description = ReadOpenGraphProperty(document, "og:description");
+
+            var images = GetPageImages(document);
 
             if (String.IsNullOrEmpty(title))
             {
@@ -41,19 +33,14 @@ namespace MetaExtractor
                 title = node != null ? node.InnerText : "";
             }
 
-            if (String.IsNullOrEmpty(image))
+            if (!String.IsNullOrEmpty(image))
             {
-                var images = document.DocumentNode.Descendants("img")
-                    .Select(e => e.GetAttributeValue("src", null))
-                    .Where(s => !String.IsNullOrEmpty(s))
-                    .ToList();
-
-                image = images.FirstOrDefault();
+                images = new List<string> { image };
             }
 
-            if (String.IsNullOrEmpty(image) && !String.IsNullOrEmpty(DefaultImage))
+            if (!images.Any() && String.IsNullOrEmpty(image) && !String.IsNullOrEmpty(DefaultImage))
             {
-                image = DefaultImage;
+                images = new List<string> { DefaultImage };
             }
 
             if (String.IsNullOrEmpty(description))
@@ -73,12 +60,38 @@ namespace MetaExtractor
 
             return new Metadata
             {
-                Title = title,
-                Description = description,
-                Image = image,
+                Title = title.Trim(),
+                Description = description.Trim(),
+                Image = images,
                 Type = "webpage",
                 Url = uri.ToString()
             };
+        }
+
+        private static async Task<string> LoadPageHtml(Uri uri)
+        {
+            var handler = new HttpClientHandler { AllowAutoRedirect = true };
+
+            var client = new HttpClient(handler);
+
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
+
+            var bytes = await client.GetByteArrayAsync(uri);
+            var html = WebUtility.HtmlDecode(Encoding.UTF8.GetString(bytes));
+
+            return html;
+        }
+
+        private static List<string> GetPageImages(HtmlDocument document)
+        {
+            return document.DocumentNode.Descendants("img")
+                  .Select(e => e.GetAttributeValue("src", null))
+                  .Where(s => !String.IsNullOrEmpty(s))
+                  .ToList();
         }
 
         private static string ReadOpenGraphProperty(HtmlDocument document, string name)
