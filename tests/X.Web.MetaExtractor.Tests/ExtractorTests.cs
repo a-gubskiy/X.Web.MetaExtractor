@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MetaExtractor.Tests
+namespace X.Web.MetaExtractor.Tests
 {
     public class UnitTest1
     {

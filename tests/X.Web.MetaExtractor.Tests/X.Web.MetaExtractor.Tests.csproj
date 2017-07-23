@@ -8,6 +8,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\MetaExtractor\MetaExtractor.csproj" />
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MetaExtractor
+namespace X.Web.MetaExtractor
 {
     public class Extractor
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MetaExtractor
+namespace X.Web.MetaExtractor
 {
     public class Metadata
     {
