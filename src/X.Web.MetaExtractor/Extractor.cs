@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace X.Web.MetaExtractor
@@ -24,6 +25,8 @@ namespace X.Web.MetaExtractor
             var title = ReadOpenGraphProperty(document, "og:title");
             var image = ReadOpenGraphProperty(document, "og:image");
             var description = ReadOpenGraphProperty(document, "og:description");
+
+            var content = CleanupContent(html);
 
             var images = GetPageImages(document);
 
@@ -51,21 +54,66 @@ namespace X.Web.MetaExtractor
 
             if (String.IsNullOrEmpty(description))
             {
-                var node = document.DocumentNode.SelectSingleNode("//body");
-                var maxLength = node.InnerText.Length;
-                var length = maxLength >= 300 ? 300 : maxLength;
+                var doc = new HtmlDocument();
+                doc.LoadHtml(content);
+                var text = doc.DocumentNode.InnerText;
 
-                description = node.InnerText.Substring(0, length);
+                var length = text.Length >= 300 ? 300 : text.Length;
+                description = text.Substring(0, length);
             }
 
             return new Metadata
             {
                 Title = title.Trim(),
                 Description = description.Trim(),
+                Content = content,
                 Image = images,
                 Type = "webpage",
                 Url = uri.ToString()
             };
+        }
+
+        private static string CleanupContent(string data)
+        {
+            if (string.IsNullOrEmpty(data)) return string.Empty;
+
+            var document = new HtmlDocument();
+            document.LoadHtml(data);
+            
+            document.DocumentNode.Descendants()
+                .Where(n => n.Name == "script" || n.Name == "style" || n.InnerText.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
+                .ToList()
+                .ForEach(n => n.Remove());
+
+            var acceptableTags = new String[] { "strong", "em", "u", "img", "i" };
+
+            var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
+
+            while (nodes.Count > 0)
+            {
+                var node = nodes.Dequeue();
+                var parentNode = node.ParentNode;
+
+                if (!acceptableTags.Contains(node.Name) && node.Name != "#text")
+                {
+                    var childNodes = node.SelectNodes("./*|./text()");
+
+                    if (childNodes != null)
+                    {
+                        foreach (var child in childNodes)
+                        {
+                            nodes.Enqueue(child);
+                            parentNode.InsertBefore(child, node);
+                        }
+                    }
+
+                    parentNode.RemoveChild(node);
+                }
+            }
+
+            var content = document.DocumentNode.InnerHtml.Trim();
+            content = Regex.Replace(content, @"[\r\n]{2,}", "<br />");
+            return content;
         }
 
         private static async Task<string> LoadPageHtml(Uri uri)

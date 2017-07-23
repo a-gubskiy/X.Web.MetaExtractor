@@ -8,6 +8,8 @@ namespace X.Web.MetaExtractor
 
         public string Description { get; set; }
 
+        public string Content { get; set; }
+
         public string Url { get; set; }
 
         public IEnumerable<string> Image { get; set; }
@@ -16,7 +18,7 @@ namespace X.Web.MetaExtractor
 
         public override string ToString()
         {
-            return $"{Title}\r\n{Description}\r\n{Url}\r\n{Image}";
+            return $"{Title}\r\n{Description}\r\n{Url}";
         }
     }
 }

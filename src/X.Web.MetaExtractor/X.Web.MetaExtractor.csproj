@@ -10,7 +10,7 @@
     <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/dncuug/X.Web.MetaExtractor/master/README.md</PackageLicenseUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/dncuug/X.Web.MetaExtractor/master/LICENSE</PackageLicenseUrl>
     <Copyright>Andrew Gubskiy</Copyright>
     <PackageTags>open graph, net core, metadata, dncuug</PackageTags>
     <PackageIconUrl>https://ru.gravatar.com/userimage/8071071/f2dc08ee7e4016451f64a7ae9cffd110.png?size=200</PackageIconUrl>
