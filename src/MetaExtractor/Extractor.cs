@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -13,10 +15,18 @@ namespace MetaExtractor
 
         public async Task<Metadata> Extract(Uri uri)
         {
-            var client = new HttpClient();
+            var handler = new HttpClientHandler { AllowAutoRedirect = true };
+
+            var client = new HttpClient(handler);
+
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
 
             var bytes = await client.GetByteArrayAsync(uri);
-            var html = Encoding.UTF8.GetString(bytes);
+            var html = WebUtility.HtmlDecode(Encoding.UTF8.GetString(bytes));
 
             var document = new HtmlDocument();
             document.LoadHtml(html);
