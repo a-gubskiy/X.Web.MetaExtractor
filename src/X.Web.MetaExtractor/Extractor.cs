@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,8 @@ using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.IO.Compression;
+using System.IO;
 
 namespace X.Web.MetaExtractor
 {
@@ -17,6 +19,8 @@ namespace X.Web.MetaExtractor
         public async Task<Metadata> Extract(Uri uri)
         {
             var html = await LoadPageHtml(uri);
+
+            html = System.Net.WebUtility.UrlDecode(html);
 
             var document = new HtmlDocument();
             document.LoadHtml(html);
@@ -79,7 +83,7 @@ namespace X.Web.MetaExtractor
 
             var document = new HtmlDocument();
             document.LoadHtml(data);
-            
+
             document.DocumentNode.Descendants()
                 .Where(n => n.Name == "script" || n.Name == "style" || n.InnerText.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
                 .ToList()
@@ -128,10 +132,36 @@ namespace X.Web.MetaExtractor
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
 
+            var responseStream = await client.GetStreamAsync(uri);
             var bytes = await client.GetByteArrayAsync(uri);
-            var html = WebUtility.HtmlDecode(Encoding.UTF8.GetString(bytes));
 
-            return html;
+            var html = ReadFromResponse(bytes);
+            return WebUtility.HtmlDecode(html);
+        }
+
+        private static string ReadFromResponse(byte[] bytes)
+        {
+            try
+            {
+                return ReadFromGzipStream(new MemoryStream(bytes));
+            }
+            catch
+            {
+                return ReadFromStandardStream(new MemoryStream(bytes));
+            }
+        }
+
+        private static string ReadFromStandardStream(Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+                return reader.ReadToEnd();
+        }
+
+        private static string ReadFromGzipStream(Stream stream)
+        {
+            using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
+            using (var reader = new StreamReader(deflateStream))
+                return reader.ReadToEnd();
         }
 
         private static List<string> GetPageImages(HtmlDocument document)
@@ -145,7 +175,6 @@ namespace X.Web.MetaExtractor
         private static string ReadOpenGraphProperty(HtmlDocument document, string name)
         {
             var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
-
 
             if (node?.Attributes["content"] != null)
             {
