@@ -53,7 +53,7 @@ namespace X.Web.MetaExtractor
             if (String.IsNullOrEmpty(description))
             {
                 var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
-                description = node != null ? node.Attributes["content"].Value : "";
+                description = node != null ? node.Attributes["content"]?.Value : "";
             }
 
             if (String.IsNullOrEmpty(description))
