@@ -16,9 +16,6 @@ namespace X.Web.MetaExtractor
 
         public string Type { get; set; }
 
-        public override string ToString()
-        {
-            return $"{Title}\r\n{Description}\r\n{Url}";
-        }
+        public override string ToString() => $"{Title}\r\n{Description}\r\n{Url}";
     }
 }

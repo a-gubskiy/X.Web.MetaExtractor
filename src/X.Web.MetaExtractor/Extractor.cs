@@ -20,7 +20,7 @@ namespace X.Web.MetaExtractor
         {
             var html = await LoadPageHtml(uri);
 
-            html = System.Net.WebUtility.UrlDecode(html);
+            html = WebUtility.UrlDecode(html);
 
             var document = new HtmlDocument();
             document.LoadHtml(html);
@@ -79,17 +79,20 @@ namespace X.Web.MetaExtractor
 
         private static string CleanupContent(string data)
         {
-            if (string.IsNullOrEmpty(data)) return string.Empty;
+            if (string.IsNullOrEmpty(data)) 
+                return string.Empty;
 
             var document = new HtmlDocument();
             document.LoadHtml(data);
 
             document.DocumentNode.Descendants()
-                .Where(n => n.Name == "script" || n.Name == "style" || n.InnerText.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
+                .Where(n => n.Name == "script" ||
+                            n.Name == "style" ||
+                            n.InnerText.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
                 .ToList()
                 .ForEach(n => n.Remove());
 
-            var acceptableTags = new String[] { "strong", "em", "u", "img", "i" };
+            var acceptableTags = new[] { "strong", "em", "u", "img", "i" };
 
             var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
 
@@ -132,7 +135,6 @@ namespace X.Web.MetaExtractor
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
 
-            var responseStream = await client.GetStreamAsync(uri);
             var bytes = await client.GetByteArrayAsync(uri);
 
             var html = ReadFromResponse(bytes);
@@ -165,21 +167,17 @@ namespace X.Web.MetaExtractor
         }
 
         private static List<string> GetPageImages(HtmlDocument document)
-        {
-            return document.DocumentNode.Descendants("img")
-                  .Select(e => e.GetAttributeValue("src", null))
-                  .Where(s => !String.IsNullOrEmpty(s))
-                  .ToList();
-        }
+            => document.DocumentNode.Descendants("img")
+                .Select(e => e.GetAttributeValue("src", null))
+                .Where(s => !String.IsNullOrEmpty(s))
+                .ToList();
 
         private static string ReadOpenGraphProperty(HtmlDocument document, string name)
         {
             var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
 
             if (node?.Attributes["content"] != null)
-            {
                 return node.Attributes["content"].Value;
-            }
 
             return string.Empty;
         }
