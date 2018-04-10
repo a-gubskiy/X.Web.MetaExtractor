@@ -20,8 +20,6 @@ namespace X.Web.MetaExtractor
         {
             var html = await LoadPageHtml(uri);
 
-            html = WebUtility.UrlDecode(html);
-
             var document = new HtmlDocument();
             document.LoadHtml(html);
 
@@ -37,23 +35,24 @@ namespace X.Web.MetaExtractor
             if (String.IsNullOrEmpty(title))
             {
                 var node = document.DocumentNode.SelectSingleNode("//head/title");
-                title = node != null ? node.InnerText : "";
+                title = node != null ? HtmlDecode(node.InnerText) : "";
             }
 
             if (!String.IsNullOrEmpty(image))
             {
-                images = new List<string> { image };
+                //When image defined via Open Graph
+                images = new List<string> {image};
             }
 
             if (!images.Any() && String.IsNullOrEmpty(image) && !String.IsNullOrEmpty(DefaultImage))
             {
-                images = new List<string> { DefaultImage };
+                images = new List<string> {DefaultImage};
             }
 
             if (String.IsNullOrEmpty(description))
             {
                 var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
-                description = node != null ? node.Attributes["content"]?.Value : "";
+                description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : "";
             }
 
             if (String.IsNullOrEmpty(description))
@@ -71,15 +70,14 @@ namespace X.Web.MetaExtractor
                 Title = title.Trim(),
                 Description = description.Trim(),
                 Content = content,
-                Image = images,
-                Type = "webpage",
+                Images = images,
                 Url = uri.ToString()
             };
         }
 
         private static string CleanupContent(string data)
         {
-            if (string.IsNullOrEmpty(data)) 
+            if (string.IsNullOrEmpty(data))
                 return string.Empty;
 
             var document = new HtmlDocument();
@@ -92,7 +90,7 @@ namespace X.Web.MetaExtractor
                 .ToList()
                 .ForEach(n => n.Remove());
 
-            var acceptableTags = new[] { "strong", "em", "u", "img", "i" };
+            var acceptableTags = new[] {"strong", "em", "u", "img", "i"};
 
             var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
 
@@ -119,13 +117,13 @@ namespace X.Web.MetaExtractor
             }
 
             var content = document.DocumentNode.InnerHtml.Trim();
-            content = Regex.Replace(content, @"[\r\n]{2,}", "<br />");
-            return content;
+            
+            return Regex.Replace(content, @"[\r\n]{2,}", "<br />");
         }
 
         private static async Task<string> LoadPageHtml(Uri uri)
         {
-            var handler = new HttpClientHandler { AllowAutoRedirect = true };
+            var handler = new HttpClientHandler {AllowAutoRedirect = true};
 
             var client = new HttpClient(handler);
 
@@ -137,8 +135,7 @@ namespace X.Web.MetaExtractor
 
             var bytes = await client.GetByteArrayAsync(uri);
 
-            var html = ReadFromResponse(bytes);
-            return WebUtility.HtmlDecode(html);
+            return ReadFromResponse(bytes);
         }
 
         private static string ReadFromResponse(byte[] bytes)
@@ -165,21 +162,19 @@ namespace X.Web.MetaExtractor
             using (var reader = new StreamReader(deflateStream))
                 return reader.ReadToEnd();
         }
-
+        
+        private static string ReadOpenGraphProperty(HtmlDocument document, string name)
+        {
+            var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
+            return HtmlDecode(node?.Attributes["content"]?.Value);
+        }
+        
         private static List<string> GetPageImages(HtmlDocument document)
             => document.DocumentNode.Descendants("img")
                 .Select(e => e.GetAttributeValue("src", null))
                 .Where(s => !String.IsNullOrEmpty(s))
                 .ToList();
-
-        private static string ReadOpenGraphProperty(HtmlDocument document, string name)
-        {
-            var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
-
-            if (node?.Attributes["content"] != null)
-                return node.Attributes["content"].Value;
-
-            return string.Empty;
-        }
+        
+        private static string HtmlDecode(string text) => string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
     }
 }

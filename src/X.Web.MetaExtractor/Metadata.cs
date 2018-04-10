@@ -12,9 +12,7 @@ namespace X.Web.MetaExtractor
 
         public string Url { get; set; }
 
-        public IEnumerable<string> Image { get; set; }
-
-        public string Type { get; set; }
+        public IReadOnlyCollection<string> Images { get; set; }
 
         public override string ToString() => $"{Title}\r\n{Description}\r\n{Url}";
     }
