@@ -20,8 +20,7 @@ namespace X.Web.MetaExtractor
         {
             var html = await LoadPageHtml(uri);
 
-            var document = new HtmlDocument();
-            document.LoadHtml(html);
+            var document = CreateHtmlDocument(html);
 
             //Trye parse Open Graph properties
             var title = ReadOpenGraphProperty(document, "og:title");
@@ -57,8 +56,8 @@ namespace X.Web.MetaExtractor
 
             if (String.IsNullOrEmpty(description))
             {
-                var doc = new HtmlDocument();
-                doc.LoadHtml(content);
+                var doc = CreateHtmlDocument(content);
+                
                 var text = doc.DocumentNode.InnerText;
 
                 var length = text.Length >= 300 ? 300 : text.Length;
@@ -73,6 +72,13 @@ namespace X.Web.MetaExtractor
                 Images = images,
                 Url = uri.ToString()
             };
+        }
+
+        private static HtmlDocument CreateHtmlDocument(string html)
+        {
+            var document = new HtmlDocument();
+            document.LoadHtml(html);
+            return document;
         }
 
         private static string CleanupContent(string data)
@@ -97,7 +103,6 @@ namespace X.Web.MetaExtractor
             while (nodes.Count > 0)
             {
                 var node = nodes.Dequeue();
-                var parentNode = node.ParentNode;
 
                 if (!acceptableTags.Contains(node.Name) && node.Name != "#text")
                 {
@@ -108,16 +113,16 @@ namespace X.Web.MetaExtractor
                         foreach (var child in childNodes)
                         {
                             nodes.Enqueue(child);
-                            parentNode.InsertBefore(child, node);
+                            node.ParentNode.InsertBefore(child, node);
                         }
                     }
 
-                    parentNode.RemoveChild(node);
+                    node.ParentNode.RemoveChild(node);
                 }
             }
 
             var content = document.DocumentNode.InnerHtml.Trim();
-            
+
             return Regex.Replace(content, @"[\r\n]{2,}", "<br />");
         }
 
@@ -129,52 +134,53 @@ namespace X.Web.MetaExtractor
 
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:19.0) Gecko/20100101 Firefox/19.0");
+            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "curl/7.54.0 (X.Web.MetaExtractor)");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
 
             var bytes = await client.GetByteArrayAsync(uri);
 
-            return ReadFromResponse(bytes);
+            return await ReadFromResponse(bytes);
         }
 
-        private static string ReadFromResponse(byte[] bytes)
+        private static async Task<string> ReadFromResponse(byte[] bytes)
         {
             try
             {
-                return ReadFromGzipStream(new MemoryStream(bytes));
+                return await ReadFromGzipStream(new MemoryStream(bytes));
             }
             catch
             {
-                return ReadFromStandardStream(new MemoryStream(bytes));
+                return await ReadFromStandardStream(new MemoryStream(bytes));
             }
         }
 
-        private static string ReadFromStandardStream(Stream stream)
+        private static async Task<string> ReadFromStandardStream(Stream stream)
         {
             using (var reader = new StreamReader(stream))
-                return reader.ReadToEnd();
+                return await reader.ReadToEndAsync();
         }
 
-        private static string ReadFromGzipStream(Stream stream)
+        private static async Task<string> ReadFromGzipStream(Stream stream)
         {
             using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
             using (var reader = new StreamReader(deflateStream))
-                return reader.ReadToEnd();
+                return await reader.ReadToEndAsync();
         }
-        
+
         private static string ReadOpenGraphProperty(HtmlDocument document, string name)
         {
             var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
             return HtmlDecode(node?.Attributes["content"]?.Value);
         }
-        
+
         private static List<string> GetPageImages(HtmlDocument document)
             => document.DocumentNode.Descendants("img")
                 .Select(e => e.GetAttributeValue("src", null))
                 .Where(s => !String.IsNullOrEmpty(s))
                 .ToList();
-        
-        private static string HtmlDecode(string text) => string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
+
+        private static string HtmlDecode(string text) =>
+            string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
     }
 }
