@@ -7,6 +7,8 @@ namespace X.Web.MetaExtractor.Example
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+            
+            var extractpor = new X.Web.MetaExtractor.Extractor();
         }
     }
 }

@@ -14,7 +14,24 @@ namespace X.Web.MetaExtractor
 {
     public class Extractor
     {
-        public string DefaultImage { get; set; }
+        private readonly string _defaultImage;
+        private readonly TimeSpan _timeout;
+        private readonly HttpClient _httpClient;
+
+
+        public Extractor(string defaultImage = "", bool useSingleHttpClient = false)
+            : this(defaultImage, TimeSpan.FromSeconds(10), useSingleHttpClient)
+        {
+        }
+
+        public Extractor(string defaultImage, TimeSpan timeout, bool useSingleHttpClient)
+        {
+            _defaultImage = defaultImage;
+            _timeout = timeout;
+
+            if (useSingleHttpClient)
+                _httpClient = CreateHttpClient(_timeout);
+        }
 
         public async Task<Metadata> Extract(Uri uri)
         {
@@ -43,9 +60,9 @@ namespace X.Web.MetaExtractor
                 images = new List<string> {image};
             }
 
-            if (!images.Any() && String.IsNullOrEmpty(image) && !String.IsNullOrEmpty(DefaultImage))
+            if (!images.Any() && String.IsNullOrEmpty(image) && !String.IsNullOrEmpty(_defaultImage))
             {
-                images = new List<string> {DefaultImage};
+                images = new List<string> {_defaultImage};
             }
 
             if (String.IsNullOrEmpty(description))
@@ -57,7 +74,7 @@ namespace X.Web.MetaExtractor
             if (String.IsNullOrEmpty(description))
             {
                 var doc = CreateHtmlDocument(content);
-                
+
                 var text = doc.DocumentNode.InnerText;
 
                 var length = text.Length >= 300 ? 300 : text.Length;
@@ -126,11 +143,20 @@ namespace X.Web.MetaExtractor
             return Regex.Replace(content, @"[\r\n]{2,}", "<br />");
         }
 
-        private static async Task<string> LoadPageHtml(Uri uri)
+        private async Task<string> LoadPageHtml(Uri uri)
+        {
+            var client = _httpClient ?? CreateHttpClient(_timeout);
+
+            var bytes = await client.GetByteArrayAsync(uri);
+
+            return await ReadFromResponse(bytes);
+        }
+
+        private static HttpClient CreateHttpClient(TimeSpan timeout)
         {
             var handler = new HttpClientHandler {AllowAutoRedirect = true};
 
-            var client = new HttpClient(handler);
+            var client = new HttpClient(handler) {Timeout = timeout};
 
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
@@ -138,9 +164,7 @@ namespace X.Web.MetaExtractor
             client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
             client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
 
-            var bytes = await client.GetByteArrayAsync(uri);
-
-            return await ReadFromResponse(bytes);
+            return client;
         }
 
         private static async Task<string> ReadFromResponse(byte[] bytes)
