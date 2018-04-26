@@ -13,6 +13,11 @@ namespace X.Web.MetaExtractor
         private readonly HttpClient _httpClient;
         private readonly TimeSpan _timeout;
 
+        public PageContentLoader()
+            : this(TimeSpan.FromSeconds(10))
+        {
+        }
+        
         public PageContentLoader(TimeSpan timeout, bool useSingleHttpClient = false)
         {
             _timeout = timeout;

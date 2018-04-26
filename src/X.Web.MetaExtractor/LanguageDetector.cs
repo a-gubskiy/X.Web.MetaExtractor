@@ -16,7 +16,7 @@ namespace X.Web.MetaExtractor
             try
             {
                 document.LoadHtml(html);
-                return document.DocumentNode.SelectSingleNode("//html").Attributes["lang"].Value;
+                return document.DocumentNode.SelectSingleNode("//html")?.Attributes["lang"]?.Value?.ToLower();
             }
             catch
             {

@@ -23,5 +23,15 @@ namespace X.Web.MetaExtractor.Tests
             Assert.NotNull(metaData4);
             Assert.NotNull(metaData5);
         }
+        
+        [Fact]
+        public async Task TestExtractLanguageData()
+        {
+            var extractor = new Extractor("", new PageContentLoader(), new LanguageDetector());
+          
+            var metaData = await extractor.ExtractAsync(new Uri("https://diepresse.com/home/panorama/wien/5386805/Polizist-attackiert_Parlament-verstaerkt-Bewachung"));
+            
+            Assert.Equal("de", metaData.Language);
+        }
     }
 }
