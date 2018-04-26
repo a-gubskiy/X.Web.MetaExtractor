@@ -1,42 +1,50 @@
-using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.IO.Compression;
-using System.IO;
+using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor
 {
-    public class Extractor
+    public class Extractor : IExtractor
     {
         private readonly string _defaultImage;
-        private readonly TimeSpan _timeout;
-        private readonly HttpClient _httpClient;
-
-
-        public Extractor(string defaultImage = "", bool useSingleHttpClient = false)
-            : this(defaultImage, TimeSpan.FromSeconds(10), useSingleHttpClient)
-        {
-        }
+        private readonly IPageContentLoader _pageContentLoader;
 
         public Extractor(string defaultImage, TimeSpan timeout, bool useSingleHttpClient)
+            : this(defaultImage, new PageContentLoader(timeout, useSingleHttpClient))
         {
-            _defaultImage = defaultImage;
-            _timeout = timeout;
-
-            if (useSingleHttpClient)
-                _httpClient = CreateHttpClient(_timeout);
         }
 
-        public async Task<Metadata> Extract(Uri uri)
+        public Extractor()
+            : this("", new PageContentLoader(TimeSpan.FromSeconds(10), false))
         {
-            var html = await LoadPageHtml(uri);
+        }
 
+        public Extractor(string defaultImage, IPageContentLoader pageContentLoader)
+        {
+            _defaultImage = defaultImage;
+            _pageContentLoader = pageContentLoader;
+        }
+
+        public async Task<Metadata> ExtractAsync(Uri uri)
+        {
+            var html = await _pageContentLoader.LoadPageContentAsync(uri);
+
+            return Extract(uri, html);
+        }
+        
+        public Metadata Extract(Uri uri)
+        {
+            var html = _pageContentLoader.LoadPageContent(uri);
+
+            return Extract(uri, html);
+        }
+
+        private Metadata Extract(Uri uri, string html)
+        {
             var document = CreateHtmlDocument(html);
 
             //Trye parse Open Graph properties
@@ -143,55 +151,6 @@ namespace X.Web.MetaExtractor
             return Regex.Replace(content, @"[\r\n]{2,}", "<br />");
         }
 
-        private async Task<string> LoadPageHtml(Uri uri)
-        {
-            var client = _httpClient ?? CreateHttpClient(_timeout);
-
-            var bytes = await client.GetByteArrayAsync(uri);
-
-            return await ReadFromResponse(bytes);
-        }
-
-        private static HttpClient CreateHttpClient(TimeSpan timeout)
-        {
-            var handler = new HttpClientHandler {AllowAutoRedirect = true};
-
-            var client = new HttpClient(handler) {Timeout = timeout};
-
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "curl/7.54.0 (X.Web.MetaExtractor)");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
-
-            return client;
-        }
-
-        private static async Task<string> ReadFromResponse(byte[] bytes)
-        {
-            try
-            {
-                return await ReadFromGzipStream(new MemoryStream(bytes));
-            }
-            catch
-            {
-                return await ReadFromStandardStream(new MemoryStream(bytes));
-            }
-        }
-
-        private static async Task<string> ReadFromStandardStream(Stream stream)
-        {
-            using (var reader = new StreamReader(stream))
-                return await reader.ReadToEndAsync();
-        }
-
-        private static async Task<string> ReadFromGzipStream(Stream stream)
-        {
-            using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
-            using (var reader = new StreamReader(deflateStream))
-                return await reader.ReadToEndAsync();
-        }
-
         private static string ReadOpenGraphProperty(HtmlDocument document, string name)
         {
             var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
@@ -201,7 +160,7 @@ namespace X.Web.MetaExtractor
         private static List<string> GetPageImages(HtmlDocument document)
             => document.DocumentNode.Descendants("img")
                 .Select(e => e.GetAttributeValue("src", null))
-                .Where(s => !String.IsNullOrEmpty(s))
+                .Where(s => !string.IsNullOrEmpty(s))
                 .ToList();
 
         private static string HtmlDecode(string text) =>
