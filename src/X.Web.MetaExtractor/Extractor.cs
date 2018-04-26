@@ -12,20 +12,22 @@ namespace X.Web.MetaExtractor
     {
         private readonly string _defaultImage;
         private readonly IPageContentLoader _pageContentLoader;
+        private readonly ILanguageDetector _languageDetector;
+        
+        public Extractor()
+            : this("", TimeSpan.FromSeconds(10), false)
+        {
+        }
 
         public Extractor(string defaultImage, TimeSpan timeout, bool useSingleHttpClient)
-            : this(defaultImage, new PageContentLoader(timeout, useSingleHttpClient))
+            : this(defaultImage, new PageContentLoader(timeout, useSingleHttpClient), new FakeLanguageDetector())
         {
         }
 
-        public Extractor()
-            : this("", new PageContentLoader(TimeSpan.FromSeconds(10), false))
-        {
-        }
-
-        public Extractor(string defaultImage, IPageContentLoader pageContentLoader)
+        public Extractor(string defaultImage, IPageContentLoader pageContentLoader, ILanguageDetector languageDetector)
         {
             _defaultImage = defaultImage;
+            _languageDetector = languageDetector;
             _pageContentLoader = pageContentLoader;
         }
 
@@ -89,13 +91,16 @@ namespace X.Web.MetaExtractor
                 description = text.Substring(0, length);
             }
 
+            var language = _languageDetector.GetHtmlPageLanguage(html);
+            
             return new Metadata
             {
                 Title = title.Trim(),
                 Description = description.Trim(),
                 Content = content,
                 Images = images,
-                Url = uri.ToString()
+                Url = uri.ToString(),
+                Language = language
             };
         }
 

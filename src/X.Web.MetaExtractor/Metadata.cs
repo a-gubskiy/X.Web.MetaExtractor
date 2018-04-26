@@ -11,6 +11,8 @@ namespace X.Web.MetaExtractor
         public string Content { get; set; }
 
         public string Url { get; set; }
+        
+        public string Language { get; set; }
 
         public IReadOnlyCollection<string> Images { get; set; }
 
