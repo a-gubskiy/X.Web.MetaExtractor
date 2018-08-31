@@ -15,6 +15,8 @@ namespace X.Web.MetaExtractor
         public string Language { get; set; }
 
         public IReadOnlyCollection<string> Images { get; set; }
+        
+        public IReadOnlyCollection<string> Keywords { get; set; }
 
         public override string ToString() => $"{Title}\r\n{Description}\r\n{Url}";
     }

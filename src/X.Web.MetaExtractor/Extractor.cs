@@ -49,39 +49,38 @@ namespace X.Web.MetaExtractor
         {
             var document = CreateHtmlDocument(html);
 
-            //Trye parse Open Graph properties
+            //Try parse Open Graph properties
             var title = ReadOpenGraphProperty(document, "og:title");
             var image = ReadOpenGraphProperty(document, "og:image");
             var description = ReadOpenGraphProperty(document, "og:description");
-
+            var keywords = ExtractKeywords(document);
             var content = CleanupContent(html);
 
             var images = GetPageImages(document);
 
-            if (String.IsNullOrEmpty(title))
+            if (string.IsNullOrEmpty(title))
             {
                 var node = document.DocumentNode.SelectSingleNode("//head/title");
                 title = node != null ? HtmlDecode(node.InnerText) : "";
             }
 
-            if (!String.IsNullOrEmpty(image))
+            if (!string.IsNullOrEmpty(image))
             {
                 //When image defined via Open Graph
                 images = new List<string> {image};
             }
 
-            if (!images.Any() && String.IsNullOrEmpty(image) && !String.IsNullOrEmpty(_defaultImage))
+            if (!images.Any() && string.IsNullOrEmpty(image) && !string.IsNullOrEmpty(_defaultImage))
             {
                 images = new List<string> {_defaultImage};
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
-                var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
-                description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : "";
+                description = ExtractDescription(document);
             }
 
-            if (String.IsNullOrEmpty(description))
+            if (string.IsNullOrEmpty(description))
             {
                 var doc = CreateHtmlDocument(content);
 
@@ -96,12 +95,29 @@ namespace X.Web.MetaExtractor
             return new Metadata
             {
                 Title = title.Trim(),
+                Keywords = keywords,
                 Description = description.Trim(),
                 Content = content,
                 Images = images,
                 Url = uri.ToString(),
                 Language = language
             };
+        }
+
+        private static IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
+        {
+            var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
+            var value = node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : "";
+
+            return string.IsNullOrWhiteSpace(value)
+                ? new List<string>()
+                : value.Split(',').Select(o => o?.Trim()).Where(o => !string.IsNullOrWhiteSpace(o)).ToList();
+        }
+
+        private static string ExtractDescription(HtmlDocument document)
+        {
+            var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
+            return node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : "";
         }
 
         private static HtmlDocument CreateHtmlDocument(string html)
