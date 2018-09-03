@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -12,6 +10,7 @@ namespace X.Web.MetaExtractor
     {
         private readonly HttpClient _httpClient;
         private readonly TimeSpan _timeout;
+        
 
         public PageContentLoader()
             : this(TimeSpan.FromSeconds(10))
@@ -21,7 +20,7 @@ namespace X.Web.MetaExtractor
         public PageContentLoader(TimeSpan timeout, bool useSingleHttpClient = false)
         {
             _timeout = timeout;
-            
+
             if (useSingleHttpClient)
                 _httpClient = CreateHttpClient(_timeout);
         }
@@ -38,23 +37,13 @@ namespace X.Web.MetaExtractor
 
         public string LoadPageContent(Uri uri)
         {
-            var queue = new ConcurrentQueue<string>();
-
             var client = _httpClient ?? CreateHttpClient(_timeout);
 
-            Task.Run(() =>
-            {
-                return client.GetByteArrayAsync(uri).ContinueWith(response =>
-                {
-                    var bytes = response.GetAwaiter().GetResult();
-
-                    var html = ReadFromResponse(bytes);
-                    queue.Enqueue(html);
-                });
-            });
-
-            return queue.SingleOrDefault();
+            var bytes = client.GetByteArrayAsync(uri).GetAwaiter().GetResult();
+            
+            return ReadFromResponse(bytes);
         }
+
         
         private static string ReadFromResponse(byte[] bytes)
         {

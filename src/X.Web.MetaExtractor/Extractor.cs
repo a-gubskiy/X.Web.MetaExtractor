@@ -55,6 +55,7 @@ namespace X.Web.MetaExtractor
             var description = ReadOpenGraphProperty(document, "og:description");
             var keywords = ExtractKeywords(document);
             var content = CleanupContent(html);
+            var raw = html;
 
             var images = GetPageImages(document);
 
@@ -91,13 +92,14 @@ namespace X.Web.MetaExtractor
             }
 
             var language = _languageDetector.GetHtmlPageLanguage(html);
-            
+
             return new Metadata
             {
                 Title = title.Trim(),
                 Keywords = keywords,
                 Description = description.Trim(),
                 Content = content,
+                Raw = raw,
                 Images = images,
                 Url = uri.ToString(),
                 Language = language
@@ -123,7 +125,7 @@ namespace X.Web.MetaExtractor
         private static HtmlDocument CreateHtmlDocument(string html)
         {
             var document = new HtmlDocument();
-            document.LoadHtml(html);
+            document.LoadHtml(html ?? string.Empty);
             return document;
         }
 
@@ -178,8 +180,8 @@ namespace X.Web.MetaExtractor
             return HtmlDecode(node?.Attributes["content"]?.Value);
         }
 
-        private static List<string> GetPageImages(HtmlDocument document)
-            => document.DocumentNode.Descendants("img")
+        private static List<string> GetPageImages(HtmlDocument document) =>
+            document.DocumentNode.Descendants("img")
                 .Select(e => e.GetAttributeValue("src", null))
                 .Where(s => !string.IsNullOrEmpty(s))
                 .ToList();

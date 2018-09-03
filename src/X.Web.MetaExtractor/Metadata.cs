@@ -9,6 +9,8 @@ namespace X.Web.MetaExtractor
         public string Description { get; set; }
 
         public string Content { get; set; }
+        
+        public string Raw { get; set; }
 
         public string Url { get; set; }
         
