@@ -34,6 +34,17 @@ namespace X.Web.MetaExtractor.Tests
             var metaData = await extractor.ExtractAsync(new Uri("https://diepresse.com/home/panorama/wien/5386805/Polizist-attackiert_Parlament-verstaerkt-Bewachung"));
             
             Assert.Equal("de", metaData.Language);
+        } 
+        
+        
+        [Fact]
+        public async Task TestExtractOpenGraphTags()
+        {
+            var extractor = new Extractor("", new PageContentLoader(), new LanguageDetector());
+          
+            var metaData = await extractor.ExtractAsync(new Uri("https://codeshare.co.uk/blog/how-to-scrape-meta-data-from-a-url-using-htmlagilitypack-in-c/"));
+            
+            Assert.NotEmpty(metaData.OpenGraphTags);
         }
     }
 }

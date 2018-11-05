@@ -58,6 +58,7 @@ namespace X.Web.MetaExtractor
             var raw = html;
 
             var images = GetPageImages(document);
+            var metatags = GetOpenGraphTags(document);
 
             if (string.IsNullOrEmpty(title))
             {
@@ -97,6 +98,7 @@ namespace X.Web.MetaExtractor
             {
                 Title = title.Trim(),
                 Keywords = keywords,
+                OpenGraphTags= metatags,
                 Description = description.Trim(),
                 Content = content,
                 Raw = raw,
@@ -104,6 +106,48 @@ namespace X.Web.MetaExtractor
                 Url = uri.ToString(),
                 Language = language
             };
+        }
+
+//        private IReadOnlyCollection<KeyValuePair<string, string>> GetMetaTags(HtmlDocument document)
+//        {
+//
+//            var result = new List<KeyValuePair<string, string>>();
+//            
+//            var list = document.DocumentNode.SelectNodes("//meta"); 
+//            
+//            foreach (var node in list)
+//            {
+//                var value = node.GetAttributeValue("content", "");
+//                var key = node.GetAttributeValue("name", "");
+//                
+//                if (string.IsNullOrWhiteSpace(key))
+//                    key = node.GetAttributeValue("property", "");
+//                
+//                result.Add(new KeyValuePair<string, string>(key, value));
+//            }
+//
+//            return result;
+//        } 
+        
+        private IReadOnlyCollection<KeyValuePair<string, string>> GetOpenGraphTags(HtmlDocument document)
+        {
+
+            var result = new List<KeyValuePair<string, string>>();
+            
+            var list = document.DocumentNode.SelectNodes("//meta"); 
+            
+            foreach (var node in list)
+            {
+                var value = node.GetAttributeValue("content", "");
+                var key = node.GetAttributeValue("property", "");
+                
+                if (string.IsNullOrWhiteSpace(key) || !key.StartsWith("og:"))
+                    continue;
+               
+                result.Add(new KeyValuePair<string, string>(key, value));
+            }
+
+            return result;
         }
 
         private static IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
