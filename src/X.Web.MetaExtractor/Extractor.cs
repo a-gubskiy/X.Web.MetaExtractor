@@ -107,27 +107,6 @@ namespace X.Web.MetaExtractor
                 Language = language
             };
         }
-
-//        private IReadOnlyCollection<KeyValuePair<string, string>> GetMetaTags(HtmlDocument document)
-//        {
-//
-//            var result = new List<KeyValuePair<string, string>>();
-//            
-//            var list = document.DocumentNode.SelectNodes("//meta"); 
-//            
-//            foreach (var node in list)
-//            {
-//                var value = node.GetAttributeValue("content", "");
-//                var key = node.GetAttributeValue("name", "");
-//                
-//                if (string.IsNullOrWhiteSpace(key))
-//                    key = node.GetAttributeValue("property", "");
-//                
-//                result.Add(new KeyValuePair<string, string>(key, value));
-//            }
-//
-//            return result;
-//        } 
         
         private IReadOnlyCollection<KeyValuePair<string, string>> GetOpenGraphTags(HtmlDocument document)
         {
