@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -38,13 +39,17 @@ namespace X.Web.MetaExtractor.Tests
         
         
         [Fact]
-        public async Task TestExtractOpenGraphTags()
+        public async Task TestExtractMetaTags()
         {
             var extractor = new Extractor("", new PageContentLoader(), new LanguageDetector());
           
-            var metaData = await extractor.ExtractAsync(new Uri("https://codeshare.co.uk/blog/how-to-scrape-meta-data-from-a-url-using-htmlagilitypack-in-c/"));
+            var metaData1 = await extractor.ExtractAsync(new Uri("https://codeshare.co.uk/blog/how-to-scrape-meta-data-from-a-url-using-htmlagilitypack-in-c/"));
+            var metaData2 = await extractor.ExtractAsync(new Uri("https://diepresse.com/home/techscience/5526578/Daten-sichern_WhatsApp-loescht-am-12-November-Chatverlaeufe"));
             
-            Assert.NotEmpty(metaData.OpenGraphTags);
+            var articleSection = metaData2.MetaTags.Where(o => o.Key == "article:section").Select(o => o.Value).FirstOrDefault();
+            
+            Assert.NotEmpty(metaData1.MetaTags);
+            Assert.NotEmpty(articleSection);
         }
     }
 }

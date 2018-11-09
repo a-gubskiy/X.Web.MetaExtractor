@@ -9,7 +9,7 @@ namespace X.Web.MetaExtractor
         {
             Images = new List<string>();
             Keywords = new List<string>();
-            OpenGraphTags = new List<KeyValuePair<string, string>>();
+            MetaTags = new List<KeyValuePair<string, string>>();
         }
         
         public string Title { get; set; }
@@ -28,7 +28,7 @@ namespace X.Web.MetaExtractor
         
         public IReadOnlyCollection<string> Keywords { get; set; }
         
-        public IReadOnlyCollection<KeyValuePair<string, string>> OpenGraphTags { get; set; }
+        public IReadOnlyCollection<KeyValuePair<string, string>> MetaTags { get; set; }
 
         public override string ToString() => $"{Title}\r\n{Description}\r\n{Url}";
     }

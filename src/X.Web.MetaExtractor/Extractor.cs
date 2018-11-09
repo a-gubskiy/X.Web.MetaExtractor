@@ -58,7 +58,7 @@ namespace X.Web.MetaExtractor
             var raw = html;
 
             var images = GetPageImages(document);
-            var metatags = GetOpenGraphTags(document);
+            var metatags = GetMetaTags(document);
 
             if (string.IsNullOrEmpty(title))
             {
@@ -98,7 +98,7 @@ namespace X.Web.MetaExtractor
             {
                 Title = title.Trim(),
                 Keywords = keywords,
-                OpenGraphTags= metatags,
+                MetaTags= metatags,
                 Description = description.Trim(),
                 Content = content,
                 Raw = raw,
@@ -108,9 +108,8 @@ namespace X.Web.MetaExtractor
             };
         }
         
-        private IReadOnlyCollection<KeyValuePair<string, string>> GetOpenGraphTags(HtmlDocument document)
+        private IReadOnlyCollection<KeyValuePair<string, string>> GetMetaTags(HtmlDocument document)
         {
-
             var result = new List<KeyValuePair<string, string>>();
             
             var list = document.DocumentNode.SelectNodes("//meta"); 
@@ -118,16 +117,19 @@ namespace X.Web.MetaExtractor
             foreach (var node in list)
             {
                 var value = node.GetAttributeValue("content", "");
-                var key = node.GetAttributeValue("property", "");
+                var key1 = node.GetAttributeValue("property", "");
+                var key2 = node.GetAttributeValue("name", "");
                 
-                if (string.IsNullOrWhiteSpace(key) || !key.StartsWith("og:"))
+                if (string.IsNullOrWhiteSpace(key1) && string.IsNullOrWhiteSpace(key2))
                     continue;
-               
-                result.Add(new KeyValuePair<string, string>(key, value));
+                
+                result.Add(new KeyValuePair<string, string>(OneOf(key1, key2), value));
             }
 
             return result;
         }
+
+        private static string OneOf(string a, string b) => string.IsNullOrWhiteSpace(b) ? a : b;
 
         private static IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
         {
