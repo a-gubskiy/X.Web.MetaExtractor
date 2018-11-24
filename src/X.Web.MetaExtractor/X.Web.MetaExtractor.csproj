@@ -5,8 +5,8 @@
     <RootNamespace>X.Web.MetaExtractor</RootNamespace>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Description>X.Web.MetaExtractor allow extract meta information from any page url</Description>
-    <AssemblyVersion>1.0.11</AssemblyVersion>
-    <FileVersion>1.0.11</FileVersion>
+    <AssemblyVersion>1.0.12</AssemblyVersion>
+    <FileVersion>1.0.12</FileVersion>
     <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>
     <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -14,9 +14,9 @@
     <Copyright>Andrew Gubskiy</Copyright>
     <PackageTags>open graph, net core, metadata, dncuug</PackageTags>
     <PackageIconUrl>https://ru.gravatar.com/userimage/8071071/f2dc08ee7e4016451f64a7ae9cffd110.png?size=200</PackageIconUrl>
-    <Version>1.0.11</Version>
+    <Version>1.0.12</Version>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.9" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.10" />
   </ItemGroup>
 </Project>

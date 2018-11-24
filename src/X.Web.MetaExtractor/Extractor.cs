@@ -111,8 +111,11 @@ namespace X.Web.MetaExtractor
         private IReadOnlyCollection<KeyValuePair<string, string>> GetMetaTags(HtmlDocument document)
         {
             var result = new List<KeyValuePair<string, string>>();
+
+            var list = document?.DocumentNode?.SelectNodes("//meta");
             
-            var list = document.DocumentNode.SelectNodes("//meta"); 
+            if (list == null || !list.Any())
+                return new List<KeyValuePair<string, string>>();
             
             foreach (var node in list)
             {
