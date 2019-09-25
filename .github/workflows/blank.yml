@@ -1,0 +1,13 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run Unit Tests
+      run: dotnet test tests/X.Web.MetaExtractor.Tests/X.Web.MetaExtractor.Tests.csproj
