@@ -4,23 +4,32 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.XPath;
 using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor
 {
     public class Extractor : IExtractor
     {
+        public int MaxDescriptionLength { get; set; } = 300;
+        
         private readonly string _defaultImage;
         private readonly IPageContentLoader _pageContentLoader;
         private readonly ILanguageDetector _languageDetector;
-        
+
         public Extractor()
-            : this("", TimeSpan.FromSeconds(10), false)
+            : this(string.Empty, TimeSpan.FromSeconds(10))
         {
         }
 
+        [Obsolete]
         public Extractor(string defaultImage, TimeSpan timeout, bool useSingleHttpClient)
-            : this(defaultImage, new PageContentLoader(timeout, useSingleHttpClient), new FakeLanguageDetector())
+            : this(defaultImage, timeout)
+        {
+        }
+
+        public Extractor(string defaultImage, TimeSpan timeout)
+            : this(defaultImage, new PageContentLoader(timeout), new FakeLanguageDetector())
         {
         }
 
@@ -37,13 +46,10 @@ namespace X.Web.MetaExtractor
 
             return Extract(uri, html);
         }
-        
-        public Metadata Extract(Uri uri)
-        {
-            var html = _pageContentLoader.LoadPageContent(uri);
 
-            return Extract(uri, html);
-        }
+        [Obsolete]
+        public Metadata Extract(Uri uri) => 
+            ExtractAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
 
         private Metadata Extract(Uri uri, string html)
         {
@@ -60,35 +66,34 @@ namespace X.Web.MetaExtractor
             var images = GetPageImages(document);
             var metatags = GetMetaTags(document);
 
-            if (string.IsNullOrEmpty(title))
+            if (string.IsNullOrWhiteSpace(title))
             {
                 var node = document.DocumentNode.SelectSingleNode("//head/title");
                 title = node != null ? HtmlDecode(node.InnerText) : "";
             }
 
-            if (!string.IsNullOrEmpty(image))
+            if (!string.IsNullOrWhiteSpace(image))
             {
                 //When image defined via Open Graph
                 images = new List<string> {image};
             }
 
-            if (!images.Any() && string.IsNullOrEmpty(image) && !string.IsNullOrEmpty(_defaultImage))
+            if (!images.Any() && string.IsNullOrWhiteSpace(image) && !string.IsNullOrWhiteSpace(_defaultImage))
             {
                 images = new List<string> {_defaultImage};
             }
 
-            if (string.IsNullOrEmpty(description))
+            if (string.IsNullOrWhiteSpace(description))
             {
                 description = ExtractDescription(document);
             }
 
-            if (string.IsNullOrEmpty(description))
+            if (string.IsNullOrWhiteSpace(description))
             {
                 var doc = CreateHtmlDocument(content);
-
                 var text = doc.DocumentNode.InnerText;
-
-                var length = text.Length >= 300 ? 300 : text.Length;
+                var length = text.Length >= MaxDescriptionLength ? MaxDescriptionLength : text.Length;
+                
                 description = text.Substring(0, length);
             }
 
@@ -108,7 +113,7 @@ namespace X.Web.MetaExtractor
             };
         }
         
-        private IReadOnlyCollection<KeyValuePair<string, string>> GetMetaTags(HtmlDocument document)
+        private static IReadOnlyCollection<KeyValuePair<string, string>> GetMetaTags(HtmlDocument document)
         {
             var result = new List<KeyValuePair<string, string>>();
 
@@ -147,7 +152,7 @@ namespace X.Web.MetaExtractor
         private static string ExtractDescription(HtmlDocument document)
         {
             var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
-            return node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : "";
+            return node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : string.Empty;
         }
 
         private static HtmlDocument CreateHtmlDocument(string html)
@@ -159,13 +164,14 @@ namespace X.Web.MetaExtractor
 
         private static string CleanupContent(string data)
         {
-            if (string.IsNullOrEmpty(data))
+            if (string.IsNullOrWhiteSpace(data))
                 return string.Empty;
 
             var document = new HtmlDocument();
             document.LoadHtml(data);
 
-            document.DocumentNode.Descendants()
+            document.DocumentNode
+                .Descendants()
                 .Where(n => n.Name == "script" ||
                             n.Name == "style" ||
                             n.InnerText.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
@@ -208,10 +214,10 @@ namespace X.Web.MetaExtractor
             return HtmlDecode(node?.Attributes["content"]?.Value);
         }
 
-        private static List<string> GetPageImages(HtmlDocument document) =>
+        private static IReadOnlyCollection<string> GetPageImages(HtmlDocument document) =>
             document.DocumentNode.Descendants("img")
                 .Select(e => e.GetAttributeValue("src", null))
-                .Where(s => !string.IsNullOrEmpty(s))
+                .Where(s => !string.IsNullOrWhiteSpace(s))
                 .ToList();
 
         private static string HtmlDecode(string text) =>

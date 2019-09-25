@@ -10,6 +10,7 @@ namespace X.Web.MetaExtractor
         /// </summary>
         /// <param name="uri">Page url</param>
         /// <returns></returns>
+        [Obsolete]
         string LoadPageContent(Uri uri);
         
         /// <summary>
