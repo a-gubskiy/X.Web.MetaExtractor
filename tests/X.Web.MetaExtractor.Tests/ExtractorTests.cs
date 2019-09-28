@@ -24,6 +24,7 @@ namespace X.Web.MetaExtractor.Tests
             Assert.NotNull(metaData3);
             Assert.NotNull(metaData4);
             Assert.NotNull(metaData5);
+            
             Assert.NotEmpty(metaData6.Keywords);
         }
         
@@ -35,8 +36,7 @@ namespace X.Web.MetaExtractor.Tests
             var metaData = await extractor.ExtractAsync(new Uri("https://diepresse.com/home/panorama/wien/5386805/Polizist-attackiert_Parlament-verstaerkt-Bewachung"));
             
             Assert.Equal("de", metaData.Language);
-        } 
-        
+        }
         
         [Fact]
         public async Task TestExtractMetaTags()
@@ -46,7 +46,7 @@ namespace X.Web.MetaExtractor.Tests
             var metaData1 = await extractor.ExtractAsync(new Uri("https://codeshare.co.uk/blog/how-to-scrape-meta-data-from-a-url-using-htmlagilitypack-in-c/"));
             var metaData2 = await extractor.ExtractAsync(new Uri("https://diepresse.com/home/techscience/5526578/Daten-sichern_WhatsApp-loescht-am-12-November-Chatverlaeufe"));
             
-            var articleSection = metaData2.MetaTags.Where(o => o.Key == "article:section").Select(o => o.Value).FirstOrDefault();
+            var articleSection = metaData2.MetaTags.Where(o => o.Key == "og:description").Select(o => o.Value).FirstOrDefault();
             
             Assert.NotEmpty(metaData1.MetaTags);
             Assert.NotEmpty(articleSection);

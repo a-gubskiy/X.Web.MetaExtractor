@@ -4,7 +4,6 @@ namespace X.Web.MetaExtractor
 {
     public class Metadata
     {
-
         public Metadata()
         {
             Images = new List<string>();
