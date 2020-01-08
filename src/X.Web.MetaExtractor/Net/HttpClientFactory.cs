@@ -2,7 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
 
-namespace X.Web.MetaExtractor
+namespace X.Web.MetaExtractor.Net
 {
     public class HttpClientFactory : IHttpClientFactory
     {

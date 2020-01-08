@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
+using X.Web.MetaExtractor.Net;
 
 namespace X.Web.MetaExtractor
 {
@@ -10,17 +11,14 @@ namespace X.Web.MetaExtractor
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public PageContentLoader(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
-        
+        public PageContentLoader(IHttpClientFactory httpClientFactory) => _httpClientFactory = httpClientFactory;
+
         public PageContentLoader()
             : this(new HttpClientFactory())
         {
         }
 
-        public async Task<string> LoadPageContentAsync(Uri uri)
+        public virtual async Task<string> LoadPageContentAsync(Uri uri)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
             var client = _httpClientFactory.CreateClient();
@@ -30,10 +28,10 @@ namespace X.Web.MetaExtractor
             return await ReadFromResponseAsync(bytes);
         }
 
-        public string LoadPageContent(Uri uri) =>
+        public virtual string LoadPageContent(Uri uri) =>
             LoadPageContentAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
 
-        private static async Task<string> ReadFromResponseAsync(byte[] bytes)
+        protected static async Task<string> ReadFromResponseAsync(byte[] bytes)
         {
             try
             {
@@ -51,7 +49,7 @@ namespace X.Web.MetaExtractor
                 return await reader.ReadToEndAsync();
         }
 
-        private static async Task<string> ReadFromGzipStreamAsync(Stream stream)
+        private  static async Task<string> ReadFromGzipStreamAsync(Stream stream)
         {
             using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
             using (var reader = new StreamReader(deflateStream))
