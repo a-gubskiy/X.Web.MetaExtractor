@@ -8,23 +8,24 @@ namespace X.Web.MetaExtractor
 {
     public class PageContentLoader : IPageContentLoader
     {
-        private readonly HttpClient _client;
+        private readonly IHttpClientFactory _httpClientFactory;
 
+        public PageContentLoader(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
+        
         public PageContentLoader()
-            : this(TimeSpan.FromSeconds(10))
+            : this(new HttpClientFactory())
         {
         }
-        
-        public PageContentLoader(TimeSpan timeout)
-            : this(CreateHttpClient(timeout))
-        {
-        }
-        
-        public PageContentLoader(HttpClient client) => _client = client;
 
         public async Task<string> LoadPageContentAsync(Uri uri)
         {
-            var bytes = await _client.GetByteArrayAsync(uri);
+            var request = new HttpRequestMessage(HttpMethod.Get, uri);
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.SendAsync(request);
+            var bytes = await response.Content.ReadAsByteArrayAsync();
 
             return await ReadFromResponseAsync(bytes);
         }
@@ -55,21 +56,6 @@ namespace X.Web.MetaExtractor
             using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
             using (var reader = new StreamReader(deflateStream))
                 return await reader.ReadToEndAsync();
-        }
-        
-        private static HttpClient CreateHttpClient(TimeSpan timeout)
-        {
-            var handler = new HttpClientHandler {AllowAutoRedirect = true};
-
-            var client = new HttpClient(handler) {Timeout = timeout};
-
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "curl/7.54.0 (X.Web.MetaExtractor)");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
-            client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
-
-            return client;
         }
     }
 }

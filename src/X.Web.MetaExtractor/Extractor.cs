@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -18,21 +19,15 @@ namespace X.Web.MetaExtractor
         private readonly ILanguageDetector _languageDetector;
 
         public Extractor()
-            : this(string.Empty, TimeSpan.FromSeconds(10))
+            : this(string.Empty, new PageContentLoader(), new LanguageDetector())
         {
         }
-
-        [Obsolete]
-        public Extractor(string defaultImage, TimeSpan timeout, bool useSingleHttpClient)
-            : this(defaultImage, timeout)
+        
+        public Extractor(string defaultImage)
+            : this(defaultImage, new PageContentLoader(), new LanguageDetector())
         {
         }
-
-        public Extractor(string defaultImage, TimeSpan timeout)
-            : this(defaultImage, new PageContentLoader(timeout), new FakeLanguageDetector())
-        {
-        }
-
+        
         public Extractor(string defaultImage, IPageContentLoader pageContentLoader, ILanguageDetector languageDetector)
         {
             _defaultImage = defaultImage;
@@ -48,8 +43,12 @@ namespace X.Web.MetaExtractor
         }
 
         [Obsolete]
-        public Metadata Extract(Uri uri) => 
-            ExtractAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
+        public Metadata Extract(Uri uri)
+        {
+            var html = _pageContentLoader.LoadPageContent(uri);
+            
+            return Extract(uri, html);
+        }
 
         private Metadata Extract(Uri uri, string html)
         {
@@ -62,7 +61,6 @@ namespace X.Web.MetaExtractor
             var keywords = ExtractKeywords(document);
             var content = CleanupContent(html);
             var raw = html;
-
             var images = GetPageImages(document);
             var metatags = GetMetaTags(document);
 
@@ -103,7 +101,7 @@ namespace X.Web.MetaExtractor
             {
                 Title = title.Trim(),
                 Keywords = keywords,
-                MetaTags= metatags,
+                MetaTags = metatags,
                 Description = description.Trim(),
                 Content = content,
                 Raw = raw,
@@ -134,7 +132,7 @@ namespace X.Web.MetaExtractor
                 result.Add(new KeyValuePair<string, string>(OneOf(key1, key2), value));
             }
 
-            return result;
+            return result.ToImmutableList();
         }
 
         private static string OneOf(string a, string b) => string.IsNullOrWhiteSpace(b) ? a : b;
@@ -144,9 +142,12 @@ namespace X.Web.MetaExtractor
             var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
             var value = node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : "";
 
-            return string.IsNullOrWhiteSpace(value)
-                ? new List<string>()
-                : value.Split(',').Select(o => o?.Trim()).Where(o => !string.IsNullOrWhiteSpace(o)).ToList();
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return ImmutableArray<string>.Empty;
+            }
+
+            return value.Split(',').Select(o => o?.Trim()).Where(o => !string.IsNullOrWhiteSpace(o)).ToImmutableList();
         }
 
         private static string ExtractDescription(HtmlDocument document)
@@ -218,7 +219,7 @@ namespace X.Web.MetaExtractor
             document.DocumentNode.Descendants("img")
                 .Select(e => e.GetAttributeValue("src", null))
                 .Where(s => !string.IsNullOrWhiteSpace(s))
-                .ToList();
+                .ToImmutableList();
 
         private static string HtmlDecode(string text) =>
             string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
