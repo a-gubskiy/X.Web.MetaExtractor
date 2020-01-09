@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace X.Web.MetaExtractor
 {
@@ -6,9 +7,9 @@ namespace X.Web.MetaExtractor
     {
         public Metadata()
         {
-            Images = new List<string>();
-            Keywords = new List<string>();
-            MetaTags = new List<KeyValuePair<string, string>>();
+            Images = ImmutableArray<string>.Empty;
+            Keywords = ImmutableArray<string>.Empty;
+            MetaTags = ImmutableArray<KeyValuePair<string, string>>.Empty;
         }
         
         public string Title { get; set; }

@@ -7,11 +7,12 @@ namespace X.Web.MetaExtractor.Example
 {
     class Program
     {
+        //static async Task Main(string[] args)
         static void Main(string[] args)
         {
             Console.Clear();
 
-            var linksTemplate = new List<Uri>
+            IReadOnlyCollection<Uri> linksTemplate = new List<Uri>
             {
                 new Uri("https://diepresse.com/home/wirtschaft/unternehmen/5399476/TeslaChef-Elon-Musk_Das-AutoGeschaeft-ist-die-Hoelle"),
                 new Uri("https://andrew.gubskiy.com/"),
@@ -22,31 +23,37 @@ namespace X.Web.MetaExtractor.Example
                 new Uri("https://dotnetcoretutorials.com"),
                 new Uri("https://softwareengineering.stackexchange.com/questions/305933/json-api-specification-when-do-i-need-to-return-a-404-not-found"),
                 new Uri("https://devdigest.today/post/469"),
-                new Uri("https://diepresse.com/home/panorama/wien/5386805/Polizist-attackiert_Parlament-verstaerkt-Bewachung")
+                new Uri("https://diepresse.com/home/panorama/wien/5386805/Polizist-attackiert_Parlament-verstaerkt-Bewachung"),
+                new Uri("https://www.diepresse.com/5748483/thiem-unterliegt-bei-atp-cup-gegen-den-polen-hurkacz")
             };
 
             var links = new List<Uri>();
 
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 1; i++)
             {
                 links.AddRange(Generate(linksTemplate));
             }
 
-            var extractor = new Extractor("", TimeSpan.FromSeconds(5), false);
+            var extractor = new Extractor();
 
-            var сollection = new BlockingCollection<Metadata>();
+            var collection = new BlockingCollection<Metadata>();
 
             Parallel.ForEach(links, (uri, state) =>
             {
                 Console.WriteLine($"Start extracting {uri}");
-                
-                var metadata = extractor.Extract(uri);
-                сollection.Add(metadata);
-                
-                Console.WriteLine($"{metadata.Title}");
+
+                try
+                {
+                    var metadata = extractor.Extract(uri);
+                    collection.Add(metadata);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Url: {uri}. Message: {ex.Message}");
+                }
             });
 
-            foreach (var m in сollection)
+            foreach (var m in collection)
             {
                 Console.WriteLine($"{m.Title}, {m.Description}");
             }
@@ -55,13 +62,13 @@ namespace X.Web.MetaExtractor.Example
             Console.ReadKey();
         }
 
-        private static IEnumerable<Uri> Generate(List<Uri> links)
+        private static IReadOnlyCollection<Uri> Generate(IReadOnlyCollection<Uri> links)
         {
             var result = new List<Uri>();
 
             foreach (var link in links)
             {
-                result.Add(new Uri($"{link.ToString()}?cb={Guid.NewGuid()}"));
+                result.Add(new Uri($"{link}?cb={Guid.NewGuid()}"));
             }
 
             return result;

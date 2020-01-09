@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using System.ComponentModel.Design;
+using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor
 {
@@ -9,7 +10,7 @@ namespace X.Web.MetaExtractor
 
     public class LanguageDetector : ILanguageDetector
     {
-        public string GetHtmlPageLanguage(string html)
+        public virtual string GetHtmlPageLanguage(string html)
         {
             var document = new HtmlDocument();
 
