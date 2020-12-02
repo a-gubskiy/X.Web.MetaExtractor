@@ -10,8 +10,18 @@ namespace X.Web.MetaExtractor
     public class PageContentLoader : IPageContentLoader
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly string _httpClientName;
 
-        public PageContentLoader(IHttpClientFactory httpClientFactory) => _httpClientFactory = httpClientFactory;
+        public PageContentLoader(IHttpClientFactory httpClientFactory)
+        : this(httpClientFactory, "PageContentLoaderHttpClient")
+        {
+        }
+
+        public PageContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
+        {
+            _httpClientName = httpClientName;
+            _httpClientFactory = httpClientFactory;
+        }
 
         public PageContentLoader()
             : this(new HttpClientFactory())
@@ -21,7 +31,7 @@ namespace X.Web.MetaExtractor
         public virtual async Task<string> LoadPageContentAsync(Uri uri)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
-            var client = _httpClientFactory.CreateClient();
+            var client = _httpClientFactory.CreateClient(_httpClientName);
             var response = await client.SendAsync(request);
             var bytes = await response.Content.ReadAsByteArrayAsync();
 
@@ -49,7 +59,7 @@ namespace X.Web.MetaExtractor
                 return await reader.ReadToEndAsync();
         }
 
-        private  static async Task<string> ReadFromGzipStreamAsync(Stream stream)
+        private static async Task<string> ReadFromGzipStreamAsync(Stream stream)
         {
             using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
             using (var reader = new StreamReader(deflateStream))
