@@ -17,15 +17,14 @@ namespace X.Web.MetaExtractor.Tests
             var metaData3 = await extractor.ExtractAsync(new Uri("http://torf.tv/video/IraSkladPortrait"));
             var metaData4 = await extractor.ExtractAsync(new Uri("http://www.c-sharpcorner.com/news/stratis-bitcoin-full-node-for-net-core-in-c-sharp-goes-live"));
             var metaData5 = await extractor.ExtractAsync(new Uri("http://www.aaronstannard.com/the-coming-dotnet-reinassance/"));
-            var metaData6 = await extractor.ExtractAsync(new Uri("https://bleacherreport.com/articles/2793475-nfl-preseason-week-4-roundup-bills-qb-battle-likely-down-to-allen-and-peterman"));
-            
+
             Assert.NotNull(metaData1);
             Assert.NotNull(metaData2);
             Assert.NotNull(metaData3);
             Assert.NotNull(metaData4);
             Assert.NotNull(metaData5);
             
-            Assert.NotEmpty(metaData6.Keywords);
+            Assert.NotEmpty(metaData3.Keywords);
         }
         
         [Fact]
