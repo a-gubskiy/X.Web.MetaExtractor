@@ -7,7 +7,6 @@ namespace X.Web.MetaExtractor
     {
         Task<Metadata> ExtractAsync(Uri uri);
         
-        [Obsolete]
         Metadata Extract(Uri uri);
     }
 }

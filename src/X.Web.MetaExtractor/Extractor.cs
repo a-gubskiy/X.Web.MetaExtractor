@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Xml.XPath;
 using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor
@@ -42,7 +41,6 @@ namespace X.Web.MetaExtractor
             return Extract(uri, html);
         }
 
-        [Obsolete]
         public Metadata Extract(Uri uri)
         {
             var html = _pageContentLoader.LoadPageContent(uri);
@@ -50,7 +48,14 @@ namespace X.Web.MetaExtractor
             return Extract(uri, html);
         }
 
-        private Metadata Extract(Uri uri, string html)
+        /// <summary>
+        /// Extract metadata from HTML.
+        /// Store uri as Url field
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        public Metadata Extract(Uri uri, string html)
         {
             var document = CreateHtmlDocument(html);
 

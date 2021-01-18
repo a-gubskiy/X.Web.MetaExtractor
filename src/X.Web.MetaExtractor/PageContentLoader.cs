@@ -38,6 +38,7 @@ namespace X.Web.MetaExtractor
             return await ReadFromResponseAsync(bytes);
         }
 
+        [Obsolete]
         public virtual string LoadPageContent(Uri uri) =>
             LoadPageContentAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
 
