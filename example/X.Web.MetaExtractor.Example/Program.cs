@@ -7,7 +7,6 @@ namespace X.Web.MetaExtractor.Example;
 
 class Program
 {
-    //static async Task Main(string[] args)
     static Task Main(string[] args)
     {
         Console.Clear();
