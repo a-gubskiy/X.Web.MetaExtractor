@@ -1,5 +1,8 @@
-﻿namespace X.Web.MetaExtractor;
+﻿using JetBrains.Annotations;
 
+namespace X.Web.MetaExtractor;
+
+[PublicAPI]
 public interface ILanguageDetector
 {
     /// <summary>

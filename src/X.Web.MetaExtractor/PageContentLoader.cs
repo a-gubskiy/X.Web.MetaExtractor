@@ -57,13 +57,17 @@ public class PageContentLoader : IPageContentLoader
     private static async Task<string> ReadFromStandardStreamAsync(Stream stream)
     {
         using (var reader = new StreamReader(stream))
+        {
             return await reader.ReadToEndAsync();
+        }
     }
 
     private static async Task<string> ReadFromGzipStreamAsync(Stream stream)
     {
         using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
         using (var reader = new StreamReader(deflateStream))
+        {
             return await reader.ReadToEndAsync();
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace X.Web.MetaExtractor.Example;
 class Program
 {
     //static async Task Main(string[] args)
-    static async Task Main(string[] args)
+    static Task Main(string[] args)
     {
         Console.Clear();
 
@@ -60,6 +60,8 @@ class Program
 
         Console.Write("OK");
         Console.ReadKey();
+        
+        return Task.CompletedTask;
     }
 
     private static IReadOnlyCollection<Uri> Generate(IReadOnlyCollection<Uri> links)

@@ -72,6 +72,7 @@ public class Extractor : IExtractor
         if (string.IsNullOrWhiteSpace(title))
         {
             var node = document.DocumentNode.SelectSingleNode("//head/title");
+            
             title = node != null ? HtmlDecode(node.InnerText) : "";
         }
 
@@ -121,18 +122,22 @@ public class Extractor : IExtractor
         var result = new List<KeyValuePair<string, string>>();
 
         var list = document?.DocumentNode?.SelectNodes("//meta");
-            
+
         if (list == null || !list.Any())
+        {
             return new List<KeyValuePair<string, string>>();
+        }
             
         foreach (var node in list)
         {
             var value = node.GetAttributeValue("content", "");
             var key1 = node.GetAttributeValue("property", "");
             var key2 = node.GetAttributeValue("name", "");
-                
+
             if (string.IsNullOrWhiteSpace(key1) && string.IsNullOrWhiteSpace(key2))
+            {
                 continue;
+            }
                 
             result.Add(new KeyValuePair<string, string>(OneOf(key1, key2), value));
         }
@@ -165,13 +170,16 @@ public class Extractor : IExtractor
     {
         var document = new HtmlDocument();
         document.LoadHtml(html ?? string.Empty);
+        
         return document;
     }
 
     private static string CleanupContent(string data)
     {
         if (string.IsNullOrWhiteSpace(data))
+        {
             return string.Empty;
+        }
 
         var document = new HtmlDocument();
         document.LoadHtml(data);

@@ -6,7 +6,7 @@ namespace X.Web.MetaExtractor.Net;
 
 public class HttpClientFactory : IHttpClientFactory
 {
-    private static readonly ConcurrentDictionary<string, HttpClient> Clients = new ConcurrentDictionary<string, HttpClient>();
+    private static readonly ConcurrentDictionary<string, HttpClient> Clients = new();
 
     public HttpClient CreateClient(string name) => Clients.GetOrAdd(name, (key) => CreateClient());
 
