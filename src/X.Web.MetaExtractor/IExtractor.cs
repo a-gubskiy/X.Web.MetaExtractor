@@ -1,12 +1,11 @@
 using System;
 using System.Threading.Tasks;
 
-namespace X.Web.MetaExtractor
+namespace X.Web.MetaExtractor;
+
+public interface IExtractor
 {
-    public interface IExtractor
-    {
-        Task<Metadata> ExtractAsync(Uri uri);
+    Task<Metadata> ExtractAsync(Uri uri);
         
-        Metadata Extract(Uri uri);
-    }
+    Metadata Extract(Uri uri);
 }

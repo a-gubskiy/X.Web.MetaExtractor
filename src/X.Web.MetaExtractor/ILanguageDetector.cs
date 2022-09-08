@@ -1,12 +1,11 @@
-﻿namespace X.Web.MetaExtractor
+﻿namespace X.Web.MetaExtractor;
+
+public interface ILanguageDetector
 {
-    public interface ILanguageDetector
-    {
-        /// <summary>
-        /// Return language code, or empty
-        /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
-        string GetHtmlPageLanguage(string html);
-    }
+    /// <summary>
+    /// Return language code, or empty
+    /// </summary>
+    /// <param name="html"></param>
+    /// <returns></returns>
+    string GetHtmlPageLanguage(string html);
 }
