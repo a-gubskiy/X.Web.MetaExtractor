@@ -6,11 +6,13 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
+using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor;
 
 public class Extractor : IExtractor
 {
+    [PublicAPI]
     public int MaxDescriptionLength { get; set; } = 300;
         
     private readonly string _defaultImage;
