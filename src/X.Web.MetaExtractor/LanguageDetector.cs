@@ -1,13 +1,15 @@
-﻿using System.ComponentModel.Design;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
+using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor;
 
+[PublicAPI]
 public class FakeLanguageDetector : ILanguageDetector
 {
     public string GetHtmlPageLanguage(string html) => string.Empty;
 }
 
+[PublicAPI]
 public class LanguageDetector : ILanguageDetector
 {
     public virtual string GetHtmlPageLanguage(string html)
