@@ -50,6 +50,7 @@ public class Extractor : IExtractor
     /// <param name="uri"></param>
     /// <param name="html"></param>
     /// <returns></returns>
+    [PublicAPI]
     public Metadata Extract(Uri uri, string html)
     {
         var document = CreateHtmlDocument(html);
