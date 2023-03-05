@@ -19,8 +19,10 @@ public class LanguageDetector : ILanguageDetector
         try
         {
             document.LoadHtml(html);
-                
-            return document.DocumentNode.SelectSingleNode("//html")?.Attributes["lang"]?.Value?.ToLower();
+
+            var language = document.DocumentNode.SelectSingleNode("//html")?.Attributes["lang"]?.Value?.ToLower();
+            
+            return language;
         }
         catch
         {

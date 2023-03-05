@@ -37,19 +37,21 @@ class Program
 
         var collection = new BlockingCollection<Metadata>();
 
-        Parallel.ForEach(links, (uri, state) =>
+        Parallel.ForEach(links, async Task<bool>(uri, state) =>
         {
             Console.WriteLine($"Start extracting {uri}");
 
             try
             {
-                var metadata = extractor.Extract(uri);
+                var metadata = await extractor.ExtractAsync(uri);
                 collection.Add(metadata);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Url: {uri}. Message: {ex.Message}");
             }
+
+            return true;
         });
 
         foreach (var m in collection)
