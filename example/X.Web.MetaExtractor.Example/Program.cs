@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace X.Web.MetaExtractor.Example;
 
 class Program
 {
-    static Task Main(string[] args)
+    static async Task Main(string[] args)
     {
         Console.Clear();
 
@@ -37,7 +38,8 @@ class Program
 
         var collection = new BlockingCollection<Metadata>();
 
-        Parallel.ForEach(links, async Task<bool>(uri, state) =>
+
+        await ForEach(links, async uri =>
         {
             Console.WriteLine($"Start extracting {uri}");
 
@@ -61,8 +63,6 @@ class Program
 
         Console.Write("OK");
         Console.ReadKey();
-        
-        return Task.CompletedTask;
     }
 
     private static IReadOnlyCollection<Uri> Generate(IReadOnlyCollection<Uri> links)
@@ -75,5 +75,11 @@ class Program
         }
 
         return result;
+    }
+
+    private static Task ForEach<T>(IEnumerable<T> items, Func<T, Task<bool>> action)
+    {
+        var tasks = items.Select(action).ToList();
+        return Task.WhenAll(tasks);
     }
 }
