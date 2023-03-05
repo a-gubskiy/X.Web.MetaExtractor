@@ -3,57 +3,69 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using X.Web.MetaExtractor.Net;
 
-namespace X.Web.MetaExtractor
+namespace X.Web.MetaExtractor;
+
+[PublicAPI]
+public class PageContentLoader : IPageContentLoader
 {
-    public class PageContentLoader : IPageContentLoader
+    private readonly IHttpClientFactory _httpClientFactory;
+    private readonly string _httpClientName;
+
+    public PageContentLoader(IHttpClientFactory httpClientFactory)
+        : this(httpClientFactory, "PageContentLoaderHttpClient")
     {
-        private readonly IHttpClientFactory _httpClientFactory;
+    }
 
-        public PageContentLoader(IHttpClientFactory httpClientFactory) => _httpClientFactory = httpClientFactory;
+    public PageContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
+    {
+        _httpClientName = httpClientName;
+        _httpClientFactory = httpClientFactory;
+    }
 
-        public PageContentLoader()
-            : this(new HttpClientFactory())
+    public PageContentLoader()
+        : this(new HttpClientFactory())
+    {
+    }
+
+    public virtual async Task<string> LoadPageContentAsync(Uri uri)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, uri);
+        var client = _httpClientFactory.CreateClient(_httpClientName);
+        var response = await client.SendAsync(request);
+        var bytes = await response.Content.ReadAsByteArrayAsync();
+
+        return await ReadFromResponseAsync(bytes);
+    }
+    
+    protected static async Task<string> ReadFromResponseAsync(byte[] bytes)
+    {
+        try
         {
+            return await ReadFromGzipStreamAsync(new MemoryStream(bytes));
         }
-
-        public virtual async Task<string> LoadPageContentAsync(Uri uri)
+        catch
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, uri);
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.SendAsync(request);
-            var bytes = await response.Content.ReadAsByteArrayAsync();
-
-            return await ReadFromResponseAsync(bytes);
+            return await ReadFromStandardStreamAsync(new MemoryStream(bytes));
         }
+    }
 
-        public virtual string LoadPageContent(Uri uri) =>
-            LoadPageContentAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
-
-        protected static async Task<string> ReadFromResponseAsync(byte[] bytes)
+    private static async Task<string> ReadFromStandardStreamAsync(Stream stream)
+    {
+        using (var reader = new StreamReader(stream))
         {
-            try
-            {
-                return await ReadFromGzipStreamAsync(new MemoryStream(bytes));
-            }
-            catch
-            {
-                return await ReadFromStandardStreamAsync(new MemoryStream(bytes));
-            }
+            return await reader.ReadToEndAsync();
         }
+    }
 
-        private static async Task<string> ReadFromStandardStreamAsync(Stream stream)
+    private static async Task<string> ReadFromGzipStreamAsync(Stream stream)
+    {
+        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
+        using (var reader = new StreamReader(deflateStream))
         {
-            using (var reader = new StreamReader(stream))
-                return await reader.ReadToEndAsync();
-        }
-
-        private  static async Task<string> ReadFromGzipStreamAsync(Stream stream)
-        {
-            using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
-            using (var reader = new StreamReader(deflateStream))
-                return await reader.ReadToEndAsync();
+            return await reader.ReadToEndAsync();
         }
     }
 }

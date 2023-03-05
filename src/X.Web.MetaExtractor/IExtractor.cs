@@ -1,13 +1,11 @@
 using System;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
-namespace X.Web.MetaExtractor
+namespace X.Web.MetaExtractor;
+
+[PublicAPI]
+public interface IExtractor
 {
-    public interface IExtractor
-    {
-        Task<Metadata> ExtractAsync(Uri uri);
-        
-        [Obsolete]
-        Metadata Extract(Uri uri);
-    }
+    Task<Metadata> ExtractAsync(Uri uri);
 }
