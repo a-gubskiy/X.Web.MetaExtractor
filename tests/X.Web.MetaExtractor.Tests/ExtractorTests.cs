@@ -16,7 +16,7 @@ public class UnitTest1
         var metaData2 = await extractor.ExtractAsync(new Uri("http://torf.tv/"));
         var metaData3 = await extractor.ExtractAsync(new Uri("http://torf.tv/video/IraSkladPortrait"));
         var metaData4 = await extractor.ExtractAsync(new Uri("http://www.c-sharpcorner.com/news/stratis-bitcoin-full-node-for-net-core-in-c-sharp-goes-live"));
-        var metaData5 = await extractor.ExtractAsync(new Uri("http://www.aaronstannard.com/the-coming-dotnet-reinassance/"));
+        var metaData5 = await extractor.ExtractAsync(new Uri("https://devdigest.today/platform/"));
 
         Assert.NotNull(metaData1);
         Assert.NotNull(metaData2);
