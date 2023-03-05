@@ -1,18 +1,20 @@
 using System;
-using System.Collections.Concurrent;
 using System.Net.Http;
 using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor.Net;
 
+/// <summary>
+/// ClientFactory which always return same client
+/// </summary>
 [PublicAPI]
-public class HttpClientFactory : IHttpClientFactory
+public class HttpStaticClientFactory : IHttpClientFactory
 {
-    private static readonly ConcurrentDictionary<string, HttpClient> Clients = new();
+    private static readonly HttpClient HttpClient;
 
-    public HttpClient CreateClient(string name) => Clients.GetOrAdd(name, (key) => CreateClient());
+    public HttpClient CreateClient(string name) => HttpClient;
 
-    private static HttpClient CreateClient()
+    static HttpStaticClientFactory()
     {
         var handler = new HttpClientHandler {AllowAutoRedirect = true};
 
@@ -24,6 +26,6 @@ public class HttpClientFactory : IHttpClientFactory
         client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
 
-        return client;
+        HttpClient = client;
     }
 }
