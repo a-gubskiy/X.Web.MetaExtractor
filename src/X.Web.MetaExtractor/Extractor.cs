@@ -43,13 +43,6 @@ public class Extractor : IExtractor
         return Extract(uri, html);
     }
 
-    public Metadata Extract(Uri uri)
-    {
-        var html = _pageContentLoader.LoadPageContent(uri);
-            
-        return Extract(uri, html);
-    }
-
     /// <summary>
     /// Extract metadata from HTML.
     /// Store uri as Url field
@@ -57,6 +50,7 @@ public class Extractor : IExtractor
     /// <param name="uri"></param>
     /// <param name="html"></param>
     /// <returns></returns>
+    [PublicAPI]
     public Metadata Extract(Uri uri, string html)
     {
         var document = CreateHtmlDocument(html);
