@@ -3,10 +3,12 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using X.Web.MetaExtractor.Net;
 
 namespace X.Web.MetaExtractor;
 
+[PublicAPI]
 public class PageContentLoader : IPageContentLoader
 {
     private readonly IHttpClientFactory _httpClientFactory;
@@ -37,11 +39,7 @@ public class PageContentLoader : IPageContentLoader
 
         return await ReadFromResponseAsync(bytes);
     }
-
-    [Obsolete]
-    public virtual string LoadPageContent(Uri uri) =>
-        LoadPageContentAsync(uri).ConfigureAwait(false).GetAwaiter().GetResult();
-
+    
     protected static async Task<string> ReadFromResponseAsync(byte[] bytes)
     {
         try

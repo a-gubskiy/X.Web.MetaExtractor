@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
+using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor.Net;
 
+[PublicAPI]
 public class HttpClientFactory : IHttpClientFactory
 {
     private static readonly ConcurrentDictionary<string, HttpClient> Clients = new();
