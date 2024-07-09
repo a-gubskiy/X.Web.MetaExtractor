@@ -4,7 +4,6 @@
 
 **X.Web.MetaExtractor** is a powerful library that allows you to extract meta information from any web page URL. It provides a variety of content loaders to handle HTTP requests using different libraries.
 
-
 ## Breaking Changes
 
 - **Metadata class was changes**: The `Content` field has been removed from the `Metadata` class. Ensure to update your code to reflect this change if you were using the `Content` field.
@@ -96,4 +95,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/ernado-x/X.Web.MetaExtractor/blob/master/LICENSE) file for more details.

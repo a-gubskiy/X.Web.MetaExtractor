@@ -16,7 +16,14 @@
         <FileVersion>2.0.2</FileVersion>
         <TargetFrameworks>net6.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
         <Nullable>enable</Nullable>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+    </ItemGroup>
+
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="All"/>
@@ -24,7 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj" />
+        <ProjectReference Include="..\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj"/>
     </ItemGroup>
 
 </Project>
