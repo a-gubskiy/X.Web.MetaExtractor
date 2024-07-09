@@ -1,5 +1,4 @@
-﻿using System;
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor;
