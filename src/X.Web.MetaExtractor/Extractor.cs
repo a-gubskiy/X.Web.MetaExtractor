@@ -46,19 +46,17 @@ public class Extractor : IExtractor
         var html = await _pageContentLoader.LoadPageContentAsync(uri);
 
         var document = CreateHtmlDocument(html);
-        var content = HtmlToText(html);
 
         var title = ExtractTitle(document);
         var keywords = ExtractKeywords(document);
         var metatags = ExtractMetaTags(document);
-        var description = ExtractDescription(document, content, MaxDescriptionLength);
+        var description = ExtractDescription(document);
         var images = ExtractImages(document, _defaultImage);
         var language = _languageDetector.GetHtmlPageLanguage(html);
 
         return new Metadata
         {
             Raw = html,
-            Content = content,
             Url = uri.ToString(),
             
             Title = title,
@@ -132,7 +130,7 @@ public class Extractor : IExtractor
         return result.ToImmutableList();
     }
 
-    private static string ExtractDescription(HtmlDocument document, string content, int maxDescriptionLength)
+    private static string ExtractDescription(HtmlDocument document)
     {
         var description = ReadOpenGraphProperty(document, "og:description");
 
@@ -141,15 +139,7 @@ public class Extractor : IExtractor
             var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
             description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty) : string.Empty;
         }
-        else if (string.IsNullOrWhiteSpace(description))
-        {
-            var doc = CreateHtmlDocument(content);
-            var text = doc.DocumentNode.InnerText;
-            var length = text.Length >= maxDescriptionLength ? maxDescriptionLength : text.Length;
-
-            description = text.Substring(0, length);
-        }
-
+        
         return description;
     }
     
@@ -191,56 +181,6 @@ public class Extractor : IExtractor
     {
         var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
         return HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty).Trim() ?? string.Empty;
-    }
-    
-    private static string HtmlToText(string html)
-    {
-        if (string.IsNullOrWhiteSpace(html))
-        {
-            return string.Empty;
-        }
-
-        var document = new HtmlDocument();
-        document.LoadHtml(html);
-
-        document.DocumentNode
-            .Descendants()
-            .Where(n => n.Name == "script" ||
-                        n.Name == "style" ||
-                        n.InnerText.StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase))
-            .ToList()
-            .ForEach(n => n.Remove());
-
-        var acceptableTags = new[] { "strong", "em", "u", "img", "i" };
-
-        var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
-
-        while (nodes.Count > 0)
-        {
-            var node = nodes.Dequeue();
-
-            if (!acceptableTags.Contains(node.Name) && node.Name != "#text")
-            {
-                var childNodes = node.SelectNodes("./*|./text()");
-
-                if (childNodes != null)
-                {
-                    foreach (var child in childNodes)
-                    {
-                        nodes.Enqueue(child);
-                        node.ParentNode.InsertBefore(child, node);
-                    }
-                }
-
-                node.ParentNode.RemoveChild(node);
-            }
-        }
-
-        var content = document.DocumentNode.InnerHtml.Trim();
-
-        var result = HtmlCleaner.CleanUp(content);
-
-        return result;
     }
 
     private static string HtmlDecode(string text)
