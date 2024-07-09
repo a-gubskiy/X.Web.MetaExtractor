@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
+using X.Web.MetaExtractor.ContentLoaders.HttpClient;
 
 namespace X.Web.MetaExtractor;
 
@@ -20,12 +21,12 @@ public class Extractor : IExtractor
     private readonly ILanguageDetector _languageDetector;
 
     public Extractor()
-        : this(string.Empty, new PageContentLoader(), new LanguageDetector())
+        : this(string.Empty, new HttpClientPageContentLoader(), new LanguageDetector())
     {
     }
         
     public Extractor(string defaultImage)
-        : this(defaultImage, new PageContentLoader(), new LanguageDetector())
+        : this(defaultImage, new HttpClientPageContentLoader(), new LanguageDetector())
     {
     }
         
@@ -61,9 +62,9 @@ public class Extractor : IExtractor
         var description = ReadOpenGraphProperty(document, "og:description");
         var keywords = ExtractKeywords(document);
         var content = CleanupContent(html);
-        var raw = html;
         var images = GetPageImages(document);
         var metatags = GetMetaTags(document);
+        var language = _languageDetector.GetHtmlPageLanguage(html);
 
         if (string.IsNullOrWhiteSpace(title))
         {
@@ -94,19 +95,17 @@ public class Extractor : IExtractor
             var text = doc.DocumentNode.InnerText;
             var length = text.Length >= MaxDescriptionLength ? MaxDescriptionLength : text.Length;
                 
-            description = text.Substring(0, length);
+            description = text[..length];
         }
-
-        var language = _languageDetector.GetHtmlPageLanguage(html);
 
         return new Metadata
         {
-            Title = title.Trim(),
+            Title = title,
             Keywords = keywords,
             MetaTags = metatags,
-            Description = description.Trim(),
+            Description = description,
             Content = content,
-            Raw = raw,
+            Raw = html,
             Images = images,
             Url = uri.ToString(),
             Language = language
@@ -221,7 +220,7 @@ public class Extractor : IExtractor
     private static string ReadOpenGraphProperty(HtmlDocument document, string name)
     {
         var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
-        return HtmlDecode(node?.Attributes["content"]?.Value);
+        return HtmlDecode(node?.Attributes["content"]?.Value)?.Trim() ?? string.Empty;
     }
 
     private static IReadOnlyCollection<string> GetPageImages(HtmlDocument document) =>
