@@ -5,6 +5,7 @@
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor.Base\X.Web.MetaExtractor.Base.csproj" />
     <ProjectReference Include="..\..\src\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj" />
   </ItemGroup>
 </Project>
