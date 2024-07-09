@@ -5,7 +5,7 @@ using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;
 
-public class UnitTest1
+public class ExtractorTests
 {
     [Fact]
     public async Task TestExtractMethod()
