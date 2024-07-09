@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X.Web.MetaExtractor.Content
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X.Web.MetaExtractor.ContentLoaders.HttpClient", "src\X.Web.MetaExtractor.ContentLoaders.HttpClient\X.Web.MetaExtractor.ContentLoaders.HttpClient.csproj", "{D8B24C90-569C-4889-BAC8-84B20CE3FA41}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X.Web.MetaExtractor.ContentLoaders.Flurl", "src\X.Web.MetaExtractor.ContentLoaders.Flurl\X.Web.MetaExtractor.ContentLoaders.Flurl.csproj", "{0B015156-1341-4358-BA12-AF10A355810B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{D8B24C90-569C-4889-BAC8-84B20CE3FA41}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8B24C90-569C-4889-BAC8-84B20CE3FA41}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8B24C90-569C-4889-BAC8-84B20CE3FA41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B015156-1341-4358-BA12-AF10A355810B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B015156-1341-4358-BA12-AF10A355810B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B015156-1341-4358-BA12-AF10A355810B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B015156-1341-4358-BA12-AF10A355810B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +68,6 @@ Global
 		{27D04D84-47CF-4A5D-9B52-A319D983C95A} = {483AC3EF-1A72-4790-961C-7E2B5B80DA83}
 		{3FCCD2AF-A72A-48F1-8C8F-15219EBA975E} = {483AC3EF-1A72-4790-961C-7E2B5B80DA83}
 		{D8B24C90-569C-4889-BAC8-84B20CE3FA41} = {483AC3EF-1A72-4790-961C-7E2B5B80DA83}
+		{0B015156-1341-4358-BA12-AF10A355810B} = {483AC3EF-1A72-4790-961C-7E2B5B80DA83}
 	EndGlobalSection
 EndGlobal
