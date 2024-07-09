@@ -1,21 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Description>X.Web.MetaExtractor allow extract meta information from any page url</Description>
-        <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageLicenseUrl>https://raw.githubusercontent.com/dncuug/X.Web.MetaExtractor/master/LICENSE</PackageLicenseUrl>
+        <IsPackable>false</IsPackable>
         <Copyright>Andrew Gubskiy</Copyright>
-        <PackageTags>open graph, net core, metadata, dncuug</PackageTags>
-        <PackageIconUrl>https://ru.gravatar.com/userimage/8071071/f2dc08ee7e4016451f64a7ae9cffd110.png?size=200</PackageIconUrl>
         <LangVersion>default</LangVersion>
-        <PackageVersion>2.0.1</PackageVersion>
         <Title>X.Web.MetaExtractor</Title>
         <AssemblyVersion>2.0.1</AssemblyVersion>
         <FileVersion>2.0.1</FileVersion>
         <TargetFrameworks>net6.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
-        <Nullable>enable</Nullable>
+        <Nullable>enable</Nullable>        
     </PropertyGroup>
 
     <ItemGroup>
