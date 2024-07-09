@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Flurl.Http;
 using JetBrains.Annotations;
 
-namespace X.Web.MetaExtractor.ContentLoaders.Refit;
+namespace X.Web.MetaExtractor.ContentLoaders.Flurl;
 
 [PublicAPI]
 public class FlurlPageContentLoader : IPageContentLoader

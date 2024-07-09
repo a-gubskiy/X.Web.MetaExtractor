@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using X.Web.MetaExtractor.ContentLoaders.Refit;
+using X.Web.MetaExtractor.ContentLoaders.Flurl;
 using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;

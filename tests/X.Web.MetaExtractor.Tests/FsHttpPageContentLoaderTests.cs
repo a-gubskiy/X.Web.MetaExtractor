@@ -1,7 +1,6 @@
 using System;
 using System.Threading.Tasks;
 using X.Web.MetaExtractor.ContentLoaders.FsHttp;
-using X.Web.MetaExtractor.ContentLoaders.Refit;
 using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;

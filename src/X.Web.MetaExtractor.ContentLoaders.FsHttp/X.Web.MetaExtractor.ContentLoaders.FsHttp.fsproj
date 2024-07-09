@@ -28,7 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\X.Web.MetaExtractor.Base\X.Web.MetaExtractor.Base.csproj"/>
+        <ProjectReference Include="..\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj" />
     </ItemGroup>
 
 </Project>
