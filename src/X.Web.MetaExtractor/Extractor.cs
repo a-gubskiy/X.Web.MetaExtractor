@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
@@ -37,25 +36,17 @@ public class Extractor : IExtractor
         _pageContentLoader = pageContentLoader;
     }
 
+    /// <summary>
+    /// Extracts metadata from an HTML document.
+    /// </summary>
+    /// <param name="uri">The URI of the HTML document.</param>
+    /// <returns>A Metadata object containing various extracted information from the HTML document.</returns>
     public async Task<Metadata> ExtractAsync(Uri uri)
     {
         var html = await _pageContentLoader.LoadPageContentAsync(uri);
 
-        return Extract(uri, html);
-    }
-
-    /// <summary>
-    /// Extract metadata from HTML.
-    /// Store uri as Url field
-    /// </summary>
-    /// <param name="uri"></param>
-    /// <param name="html"></param>
-    /// <returns></returns>
-    [PublicAPI]
-    public Metadata Extract(Uri uri, string html)
-    {
         var document = CreateHtmlDocument(html);
-        var content = CleanupContent(html);
+        var content = HtmlToText(html);
 
         var title = ExtractTitle(document);
         var keywords = ExtractKeywords(document);
@@ -78,7 +69,7 @@ public class Extractor : IExtractor
             Language = language
         };
     }
-    
+
     private static string ExtractTitle(HtmlDocument document)
     {
         var title = ReadOpenGraphProperty(document, "og:title");
@@ -96,14 +87,21 @@ public class Extractor : IExtractor
     private static IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
     {
         var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
-        var value = node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : "";
+        var value = node != null ? HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty) : string.Empty;
 
         if (string.IsNullOrWhiteSpace(value))
         {
             return ImmutableArray<string>.Empty;
         }
 
-        return value.Split(',').Select(o => o?.Trim()).Where(o => !string.IsNullOrWhiteSpace(o)).ToImmutableList();
+        var result = value
+            .Split(',')
+            .Select(o => o?.Trim())
+            .Where(o => !string.IsNullOrWhiteSpace(o))
+            .Select(o => o!)
+            .ToImmutableList();
+        
+        return result;
     }
     
     private static IReadOnlyCollection<KeyValuePair<string, string>> ExtractMetaTags(HtmlDocument document)
@@ -141,7 +139,7 @@ public class Extractor : IExtractor
         if (string.IsNullOrWhiteSpace(description))
         {
             var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
-            description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : string.Empty;
+            description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty) : string.Empty;
         }
         else if (string.IsNullOrWhiteSpace(description))
         {
@@ -149,7 +147,7 @@ public class Extractor : IExtractor
             var text = doc.DocumentNode.InnerText;
             var length = text.Length >= maxDescriptionLength ? maxDescriptionLength : text.Length;
 
-            description = text[..length];
+            description = text.Substring(0, length);
         }
 
         return description;
@@ -178,7 +176,6 @@ public class Extractor : IExtractor
 
         return images;
     }
-   
 
     private static string OneOf(string a, string b) => string.IsNullOrWhiteSpace(b) ? a : b;
 
@@ -193,18 +190,18 @@ public class Extractor : IExtractor
     private static string ReadOpenGraphProperty(HtmlDocument document, string name)
     {
         var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
-        return HtmlDecode(node?.Attributes["content"]?.Value)?.Trim() ?? string.Empty;
+        return HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty).Trim() ?? string.Empty;
     }
     
-    private static string CleanupContent(string data)
+    private static string HtmlToText(string html)
     {
-        if (string.IsNullOrWhiteSpace(data))
+        if (string.IsNullOrWhiteSpace(html))
         {
             return string.Empty;
         }
 
         var document = new HtmlDocument();
-        document.LoadHtml(data);
+        document.LoadHtml(html);
 
         document.DocumentNode
             .Descendants()
@@ -241,11 +238,15 @@ public class Extractor : IExtractor
 
         var content = document.DocumentNode.InnerHtml.Trim();
 
-        return Regex.Replace(content, @"[\r\n]{2,}", "<br />");
+        var result = HtmlCleaner.CleanUp(content);
+
+        return result;
     }
 
     private static string HtmlDecode(string text)
     {
-        return string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
+        var result = string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
+        
+        return result ?? string.Empty;
     }
 }
