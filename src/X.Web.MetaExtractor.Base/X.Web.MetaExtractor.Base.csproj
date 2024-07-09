@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>X.Web.MetaExtractor</AssemblyName>
+        <AssemblyName>X.Web.MetaExtractor.Base</AssemblyName>
         <RootNamespace>X.Web.MetaExtractor</RootNamespace>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Description>X.Web.MetaExtractor allow extract meta information from any page url</Description>
@@ -21,12 +21,7 @@
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="All"/>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.61"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\X.Web.MetaExtractor.Base\X.Web.MetaExtractor.Base.csproj"/>
+        <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>X.Web.MetaExtractor</AssemblyName>
-        <RootNamespace>X.Web.MetaExtractor</RootNamespace>
+        <AssemblyName>X.Web.MetaExtractor.ContentLoaders.RestSharp</AssemblyName>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Description>X.Web.MetaExtractor allow extract meta information from any page url</Description>
         <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>
@@ -13,20 +12,15 @@
         <PackageIconUrl>https://ru.gravatar.com/userimage/8071071/f2dc08ee7e4016451f64a7ae9cffd110.png?size=200</PackageIconUrl>
         <LangVersion>default</LangVersion>
         <PackageVersion>1.8.0</PackageVersion>
-        <Title>X.Web.MetaExtractor</Title>
+        <Title>X.Web.MetaExtractor.ContentLoaders.RestSharp</Title>
         <AssemblyVersion>1.8.0</AssemblyVersion>
         <FileVersion>1.8.0</FileVersion>
         <TargetFrameworks>net6.0;net7.0;netstandard2.0;netstandard2.1</TargetFrameworks>
     </PropertyGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="All"/>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.61"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
-    </ItemGroup>
-
-    <ItemGroup>
+        <PackageReference Include="RestSharp" Version="111.3.0" />
         <ProjectReference Include="..\X.Web.MetaExtractor.Base\X.Web.MetaExtractor.Base.csproj"/>
     </ItemGroup>
-
 </Project>
