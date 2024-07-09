@@ -12,6 +12,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.HttpClient\X.Web.MetaExtractor.ContentLoaders.HttpClient.csproj" />
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.RestSharp\X.Web.MetaExtractor.ContentLoaders.RestSharp.csproj" />
     <ProjectReference Include="..\..\src\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj" />
   </ItemGroup>
 </Project>
