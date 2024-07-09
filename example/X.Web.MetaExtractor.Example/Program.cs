@@ -80,6 +80,7 @@ class Program
     private static Task ForEach<T>(IEnumerable<T> items, Func<T, Task<bool>> action)
     {
         var tasks = items.Select(action).ToList();
+        
         return Task.WhenAll(tasks);
     }
 }

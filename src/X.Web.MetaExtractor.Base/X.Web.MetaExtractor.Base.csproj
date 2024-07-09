@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>X.Web.MetaExtractor.Base</AssemblyName>
-        <RootNamespace>X.Web.MetaExtractor</RootNamespace>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Description>X.Web.MetaExtractor allow extract meta information from any page url</Description>
         <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>
@@ -17,6 +15,7 @@
         <AssemblyVersion>2.0.1</AssemblyVersion>
         <FileVersion>2.0.1</FileVersion>
         <TargetFrameworks>net6.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>

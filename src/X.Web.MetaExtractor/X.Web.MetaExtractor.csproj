@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>X.Web.MetaExtractor</AssemblyName>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Description>X.Web.MetaExtractor allow extract meta information from any page url</Description>
+        <Description>X.Web.MetaExtractor.ContentLoaders.Flurl provides a content loader using the Flurl HTTP library, enabling efficient and fluent HTTP request handling for meta information extraction from any page URL.</Description>
         <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>
         <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
