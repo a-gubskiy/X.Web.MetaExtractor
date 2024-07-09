@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using X.Web.MetaExtractor.ContentLoaders.RestSharp;
+using X.Web.MetaExtractor.LanguageDetectors;
 using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;

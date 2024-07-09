@@ -1,13 +1,7 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 using JetBrains.Annotations;
 
-namespace X.Web.MetaExtractor;
-
-[PublicAPI]
-public class FakeLanguageDetector : ILanguageDetector
-{
-    public string GetHtmlPageLanguage(string html) => string.Empty;
-}
+namespace X.Web.MetaExtractor.LanguageDetectors;
 
 [PublicAPI]
 public class LanguageDetector : ILanguageDetector
@@ -21,7 +15,7 @@ public class LanguageDetector : ILanguageDetector
             document.LoadHtml(html);
 
             var language = document.DocumentNode.SelectSingleNode("//html")?.Attributes["lang"]?.Value?.ToLower();
-            
+
             return language ?? string.Empty;
         }
         catch

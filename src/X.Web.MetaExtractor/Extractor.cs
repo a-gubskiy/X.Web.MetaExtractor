@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
 using X.Web.MetaExtractor.ContentLoaders.HttpClient;
+using X.Web.MetaExtractor.LanguageDetectors;
 
 namespace X.Web.MetaExtractor;
 
