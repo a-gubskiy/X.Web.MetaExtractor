@@ -4,28 +4,27 @@ using System.IO.Compression;
 using System.Net.Http;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
-using X.Web.MetaExtractor.Net;
 
-namespace X.Web.MetaExtractor;
+namespace X.Web.MetaExtractor.ContentLoaders.HttpClient;
 
 [PublicAPI]
-public class PageContentLoader : IPageContentLoader
+public class HttpClientPageContentLoader : IPageContentLoader
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
 
-    public PageContentLoader(IHttpClientFactory httpClientFactory)
+    public HttpClientPageContentLoader(IHttpClientFactory httpClientFactory)
         : this(httpClientFactory, "PageContentLoaderHttpClient")
     {
     }
 
-    public PageContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
+    public HttpClientPageContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
     {
         _httpClientName = httpClientName;
         _httpClientFactory = httpClientFactory;
     }
 
-    public PageContentLoader()
+    public HttpClientPageContentLoader()
         : this(new HttpClientFactory())
     {
     }

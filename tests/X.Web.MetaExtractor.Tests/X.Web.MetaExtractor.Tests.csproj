@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -12,6 +12,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.Flurl\X.Web.MetaExtractor.ContentLoaders.Flurl.csproj" />
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.FsHttp\X.Web.MetaExtractor.ContentLoaders.FsHttp.fsproj" />
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.RestSharp\X.Web.MetaExtractor.ContentLoaders.RestSharp.csproj" />
     <ProjectReference Include="..\..\src\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj" />
   </ItemGroup>
 </Project>
