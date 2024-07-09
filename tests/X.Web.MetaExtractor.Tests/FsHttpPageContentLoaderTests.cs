@@ -1,16 +1,17 @@
 using System;
 using System.Threading.Tasks;
+using X.Web.MetaExtractor.ContentLoaders.FsHttp;
 using X.Web.MetaExtractor.ContentLoaders.Refit;
 using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;
 
-public class FlurlPageContentLoaderTests
+public class FsHttpPageContentLoaderTests
 {
     [Fact]
     public async Task Test()
     {
-        IPageContentLoader contentLoader = new FlurlPageContentLoader();
+        IPageContentLoader contentLoader = new FsHttpPageContentLoader();
         
         var task1 = contentLoader.LoadPageContentAsync(new Uri("http://andrew.gubskiy.com/"));
         var task2 = contentLoader.LoadPageContentAsync(new Uri("http://torf.tv/"));

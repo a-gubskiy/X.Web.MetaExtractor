@@ -13,6 +13,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.Flurl\X.Web.MetaExtractor.ContentLoaders.Flurl.csproj" />
+    <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.FsHttp\X.Web.MetaExtractor.ContentLoaders.FsHttp.fsproj" />
     <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.HttpClient\X.Web.MetaExtractor.ContentLoaders.HttpClient.csproj" />
     <ProjectReference Include="..\..\src\X.Web.MetaExtractor.ContentLoaders.RestSharp\X.Web.MetaExtractor.ContentLoaders.RestSharp.csproj" />
     <ProjectReference Include="..\..\src\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj" />
