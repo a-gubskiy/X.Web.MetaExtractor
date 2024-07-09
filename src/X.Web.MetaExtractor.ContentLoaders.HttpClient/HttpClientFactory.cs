@@ -3,21 +3,20 @@ using System.Collections.Concurrent;
 using System.Net.Http;
 using JetBrains.Annotations;
 
-namespace X.Web.MetaExtractor.Net;
+namespace X.Web.MetaExtractor.ContentLoaders.HttpClient;
 
 [PublicAPI]
-[Obsolete("Use X.Web.MetaExtractor.ContentLoaders.HttpClient.HttpClientFactory instead.")]
 public class HttpClientFactory : IHttpClientFactory
 {
-    private static readonly ConcurrentDictionary<string, HttpClient> Clients = new();
+    private static readonly ConcurrentDictionary<string, System.Net.Http.HttpClient> Clients = new();
 
-    public HttpClient CreateClient(string name) => Clients.GetOrAdd(name, (key) => CreateClient());
+    public System.Net.Http.HttpClient CreateClient(string name) => Clients.GetOrAdd(name, (key) => CreateClient());
 
-    private static HttpClient CreateClient()
+    private static System.Net.Http.HttpClient CreateClient()
     {
         var handler = new HttpClientHandler {AllowAutoRedirect = true};
 
-        var client = new HttpClient(handler) {Timeout = TimeSpan.FromSeconds(5)};
+        var client = new System.Net.Http.HttpClient(handler) {Timeout = TimeSpan.FromSeconds(5)};
 
         client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
         client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");

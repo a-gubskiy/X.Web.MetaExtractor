@@ -1,17 +1,16 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
-using X.Web.MetaExtractor.ContentLoaders.RestSharp;
+using X.Web.MetaExtractor.ContentLoaders.HttpClient;
 using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;
 
-public class RestSharpExtractorTests
+public class HttpClientPageContentLoaderTests
 {
     [Fact]
-    public async Task TestRestSharpPageContentLoader()
+    public async Task Test()
     {
-        var contentLoader = new RestSharpPageContentLoader();
+        IPageContentLoader contentLoader = new HttpClientPageContentLoader();
         
         var task1 = contentLoader.LoadPageContentAsync(new Uri("http://andrew.gubskiy.com/"));
         var task2 = contentLoader.LoadPageContentAsync(new Uri("http://torf.tv/"));
