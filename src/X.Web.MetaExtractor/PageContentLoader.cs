@@ -1,72 +1,26 @@
 ﻿using System;
-using System.IO;
-using System.IO.Compression;
 using System.Net.Http;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
-using X.Web.MetaExtractor.Net;
+using X.Web.MetaExtractor.ContentLoaders.HttpClient;
 
 namespace X.Web.MetaExtractor;
 
 [PublicAPI]
 [Obsolete("Use X.Web.MetaExtractor.ContentLoaders.HttpClient.HttpClientPageContentLoader instead")]
-public class PageContentLoader : IPageContentLoader
+public class PageContentLoader : HttpClientPageContentLoader
 {
-    private readonly IHttpClientFactory _httpClientFactory;
-    private readonly string _httpClientName;
-
     public PageContentLoader(IHttpClientFactory httpClientFactory)
-        : this(httpClientFactory, "PageContentLoaderHttpClient")
+        : base(httpClientFactory)
     {
     }
 
     public PageContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
+        : base(httpClientFactory, httpClientName)
     {
-        _httpClientName = httpClientName;
-        _httpClientFactory = httpClientFactory;
     }
 
     public PageContentLoader()
-        : this(new HttpClientFactory())
+        : base()
     {
-    }
-
-    public virtual async Task<string> LoadPageContentAsync(Uri uri)
-    {
-        var request = new HttpRequestMessage(HttpMethod.Get, uri);
-        var client = _httpClientFactory.CreateClient(_httpClientName);
-        var response = await client.SendAsync(request);
-        var bytes = await response.Content.ReadAsByteArrayAsync();
-
-        return await ReadFromResponseAsync(bytes);
-    }
-    
-    protected static async Task<string> ReadFromResponseAsync(byte[] bytes)
-    {
-        try
-        {
-            return await ReadFromGzipStreamAsync(new MemoryStream(bytes));
-        }
-        catch
-        {
-            return await ReadFromStandardStreamAsync(new MemoryStream(bytes));
-        }
-    }
-
-    private static async Task<string> ReadFromStandardStreamAsync(Stream stream)
-    {
-        using (var reader = new StreamReader(stream))
-        {
-            return await reader.ReadToEndAsync();
-        }
-    }
-
-    private static async Task<string> ReadFromGzipStreamAsync(Stream stream)
-    {
-        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
-        using (var reader = new StreamReader(deflateStream))
-        {
-            return await reader.ReadToEndAsync();
-        }
     }
 }

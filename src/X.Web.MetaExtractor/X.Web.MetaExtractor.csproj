@@ -27,6 +27,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\X.Web.MetaExtractor.Base\X.Web.MetaExtractor.Base.csproj"/>
+        <ProjectReference Include="..\X.Web.MetaExtractor.ContentLoaders.HttpClient\X.Web.MetaExtractor.ContentLoaders.HttpClient.csproj" />
     </ItemGroup>
 
 </Project>
