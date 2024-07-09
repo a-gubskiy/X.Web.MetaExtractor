@@ -15,7 +15,7 @@ public class Extractor : IExtractor
 {
     [PublicAPI]
     public int MaxDescriptionLength { get; set; } = 300;
-        
+
     private readonly string _defaultImage;
     private readonly IPageContentLoader _pageContentLoader;
     private readonly ILanguageDetector _languageDetector;
@@ -24,12 +24,12 @@ public class Extractor : IExtractor
         : this(string.Empty, new HttpClientPageContentLoader(), new LanguageDetector())
     {
     }
-        
+
     public Extractor(string defaultImage)
         : this(defaultImage, new HttpClientPageContentLoader(), new LanguageDetector())
     {
     }
-        
+
     public Extractor(string defaultImage, IPageContentLoader pageContentLoader, ILanguageDetector languageDetector)
     {
         _defaultImage = defaultImage;
@@ -55,93 +55,44 @@ public class Extractor : IExtractor
     public Metadata Extract(Uri uri, string html)
     {
         var document = CreateHtmlDocument(html);
-
-        //Try parse Open Graph properties
-        var title = ReadOpenGraphProperty(document, "og:title");
-        var image = ReadOpenGraphProperty(document, "og:image");
-        var description = ReadOpenGraphProperty(document, "og:description");
-        var keywords = ExtractKeywords(document);
         var content = CleanupContent(html);
-        var images = GetPageImages(document);
-        var metatags = GetMetaTags(document);
+
+        var title = ExtractTitle(document);
+        var keywords = ExtractKeywords(document);
+        var metatags = ExtractMetaTags(document);
+        var description = ExtractDescription(document, content, MaxDescriptionLength);
+        var images = ExtractImages(document, _defaultImage);
         var language = _languageDetector.GetHtmlPageLanguage(html);
-
-        if (string.IsNullOrWhiteSpace(title))
-        {
-            var node = document.DocumentNode.SelectSingleNode("//head/title");
-            
-            title = node != null ? HtmlDecode(node.InnerText) : "";
-        }
-
-        if (!string.IsNullOrWhiteSpace(image))
-        {
-            //When image defined via Open Graph
-            images = new List<string> {image};
-        }
-
-        if (!images.Any() && string.IsNullOrWhiteSpace(image) && !string.IsNullOrWhiteSpace(_defaultImage))
-        {
-            images = new List<string> {_defaultImage};
-        }
-
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            description = ExtractDescription(document);
-        }
-
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            var doc = CreateHtmlDocument(content);
-            var text = doc.DocumentNode.InnerText;
-            var length = text.Length >= MaxDescriptionLength ? MaxDescriptionLength : text.Length;
-                
-            description = text[..length];
-        }
 
         return new Metadata
         {
+            Raw = html,
+            Content = content,
+            Url = uri.ToString(),
+            
             Title = title,
             Keywords = keywords,
             MetaTags = metatags,
             Description = description,
-            Content = content,
-            Raw = html,
             Images = images,
-            Url = uri.ToString(),
             Language = language
         };
     }
-        
-    private static IReadOnlyCollection<KeyValuePair<string, string>> GetMetaTags(HtmlDocument document)
+    
+    private static string ExtractTitle(HtmlDocument document)
     {
-        var result = new List<KeyValuePair<string, string>>();
+        var title = ReadOpenGraphProperty(document, "og:title");
 
-        var list = document?.DocumentNode?.SelectNodes("//meta");
-
-        if (list == null || !list.Any())
+        if (string.IsNullOrWhiteSpace(title))
         {
-            return new List<KeyValuePair<string, string>>();
-        }
-            
-        foreach (var node in list)
-        {
-            var value = node.GetAttributeValue("content", "");
-            var key1 = node.GetAttributeValue("property", "");
-            var key2 = node.GetAttributeValue("name", "");
+            var node = document.DocumentNode.SelectSingleNode("//head/title");
 
-            if (string.IsNullOrWhiteSpace(key1) && string.IsNullOrWhiteSpace(key2))
-            {
-                continue;
-            }
-                
-            result.Add(new KeyValuePair<string, string>(OneOf(key1, key2), value));
+            title = node != null ? HtmlDecode(node.InnerText) : string.Empty;
         }
 
-        return result.ToImmutableList();
+        return title;
     }
-
-    private static string OneOf(string a, string b) => string.IsNullOrWhiteSpace(b) ? a : b;
-
+    
     private static IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
     {
         var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
@@ -154,21 +105,97 @@ public class Extractor : IExtractor
 
         return value.Split(',').Select(o => o?.Trim()).Where(o => !string.IsNullOrWhiteSpace(o)).ToImmutableList();
     }
-
-    private static string ExtractDescription(HtmlDocument document)
+    
+    private static IReadOnlyCollection<KeyValuePair<string, string>> ExtractMetaTags(HtmlDocument document)
     {
-        var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
-        return node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : string.Empty;
+        var result = new List<KeyValuePair<string, string>>();
+
+        var list = document?.DocumentNode?.SelectNodes("//meta");
+
+        if (list == null || !list.Any())
+        {
+            return new List<KeyValuePair<string, string>>();
+        }
+
+        foreach (var node in list)
+        {
+            var value = node.GetAttributeValue("content", "");
+            var key1 = node.GetAttributeValue("property", "");
+            var key2 = node.GetAttributeValue("name", "");
+
+            if (string.IsNullOrWhiteSpace(key1) && string.IsNullOrWhiteSpace(key2))
+            {
+                continue;
+            }
+
+            result.Add(new KeyValuePair<string, string>(OneOf(key1, key2), value));
+        }
+
+        return result.ToImmutableList();
     }
+
+    private static string ExtractDescription(HtmlDocument document, string content, int maxDescriptionLength)
+    {
+        var description = ReadOpenGraphProperty(document, "og:description");
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
+            description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value) : string.Empty;
+        }
+        else if (string.IsNullOrWhiteSpace(description))
+        {
+            var doc = CreateHtmlDocument(content);
+            var text = doc.DocumentNode.InnerText;
+            var length = text.Length >= maxDescriptionLength ? maxDescriptionLength : text.Length;
+
+            description = text[..length];
+        }
+
+        return description;
+    }
+    
+    private static IReadOnlyCollection<string> ExtractImages(HtmlDocument document, string defaultImage)
+    {
+        var image = ReadOpenGraphProperty(document, "og:image");
+
+        if (!string.IsNullOrWhiteSpace(image))
+        {
+            //When image defined via Open Graph
+            return ImmutableList.Create(image);
+        }
+
+        var images = document.DocumentNode
+            .Descendants("img")
+            .Select(e => e.GetAttributeValue("src", null))
+            .Where(src => !string.IsNullOrWhiteSpace(src))
+            .ToImmutableList();
+
+        if (!images.Any() && !string.IsNullOrWhiteSpace(defaultImage))
+        {
+            return ImmutableList.Create(defaultImage);
+        }
+
+        return images;
+    }
+   
+
+    private static string OneOf(string a, string b) => string.IsNullOrWhiteSpace(b) ? a : b;
 
     private static HtmlDocument CreateHtmlDocument(string html)
     {
         var document = new HtmlDocument();
         document.LoadHtml(html ?? string.Empty);
-        
+
         return document;
     }
 
+    private static string ReadOpenGraphProperty(HtmlDocument document, string name)
+    {
+        var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
+        return HtmlDecode(node?.Attributes["content"]?.Value)?.Trim() ?? string.Empty;
+    }
+    
     private static string CleanupContent(string data)
     {
         if (string.IsNullOrWhiteSpace(data))
@@ -187,7 +214,7 @@ public class Extractor : IExtractor
             .ToList()
             .ForEach(n => n.Remove());
 
-        var acceptableTags = new[] {"strong", "em", "u", "img", "i"};
+        var acceptableTags = new[] { "strong", "em", "u", "img", "i" };
 
         var nodes = new Queue<HtmlNode>(document.DocumentNode.SelectNodes("./*|./text()"));
 
@@ -217,18 +244,8 @@ public class Extractor : IExtractor
         return Regex.Replace(content, @"[\r\n]{2,}", "<br />");
     }
 
-    private static string ReadOpenGraphProperty(HtmlDocument document, string name)
+    private static string HtmlDecode(string text)
     {
-        var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
-        return HtmlDecode(node?.Attributes["content"]?.Value)?.Trim() ?? string.Empty;
+        return string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
     }
-
-    private static IReadOnlyCollection<string> GetPageImages(HtmlDocument document) =>
-        document.DocumentNode.Descendants("img")
-            .Select(e => e.GetAttributeValue("src", null))
-            .Where(s => !string.IsNullOrWhiteSpace(s))
-            .ToImmutableList();
-
-    private static string HtmlDecode(string text) =>
-        string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
 }
