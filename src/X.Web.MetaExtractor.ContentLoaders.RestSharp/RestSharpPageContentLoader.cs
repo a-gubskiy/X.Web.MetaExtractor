@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using RestSharp;
 
-namespace X.Web.MetaExtractor.ContentLoaders.HttpClient
+namespace X.Web.MetaExtractor.ContentLoaders.RestSharp
 {
     [PublicAPI]
     public class RestSharpPageContentLoader : IPageContentLoader
