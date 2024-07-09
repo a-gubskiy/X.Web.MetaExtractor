@@ -5,6 +5,11 @@ open System.Threading.Tasks
 open FsHttp
 open JetBrains.Annotations
 
+/// <summary>
+/// FsHttpPageContentLoader is a class that implements the IPageContentLoader interface,
+/// providing functionality to asynchronously load the content of a web page given its URI.
+/// It uses FsHttp for HTTP requests and handles the process in an asynchronous workflow.
+/// </summary>
 [<PublicAPI>]
 type FsHttpPageContentLoader() =
     interface X.Web.MetaExtractor.IPageContentLoader with
