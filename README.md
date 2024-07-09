@@ -16,7 +16,6 @@
 - Support for multiple HTTP libraries:
     - Flurl
     - FsHttp
-    - HttpClient
     - RestSharp
 - Detect the language of the page content.
 
@@ -38,14 +37,15 @@ using X.Web.MetaExtractor.ContentLoaders;
 using X.Web.MetaExtractor.LanguageDetectors;
 
 // Create instances of the necessary components
-IPageContentLoader contentLoader = new FlurlContentLoader();
+IPageContentLoader contentLoader = new FlurlPageContentLoader();
 ILanguageDetector languageDetector = new LanguageDetector();
+string defaultImage = "https://example.com/example.jpg";
 
 // Create an instance of the Extractor
-IExtractor extractor = new Extractor(contentLoader, languageDetector);
+IExtractor extractor = new Extractor(defaultImage, contentLoader, languageDetector);
 
 // Extract meta information from a URL
-var metaInfo = await extractor.ExtractMetaAsync("https://example.com");
+var metaInfo = await extractor.ExtractAsync( new Uri("https://example.com"));
 
 // Display the extracted meta information
 Console.WriteLine($"Title: {metaInfo.Title}");
