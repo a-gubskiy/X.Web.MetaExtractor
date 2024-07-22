@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor;
 
+[PublicAPI]
 public class Metadata
 {
     public Metadata()
@@ -15,8 +17,6 @@ public class Metadata
     public string Title { get; set; }
 
     public string Description { get; set; }
-
-    public string Content { get; set; }
         
     public string Raw { get; set; }
 
