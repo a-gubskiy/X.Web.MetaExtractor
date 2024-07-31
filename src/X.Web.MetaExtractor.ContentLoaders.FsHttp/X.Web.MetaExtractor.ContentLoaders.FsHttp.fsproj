@@ -29,4 +29,8 @@
         <ProjectReference Include="..\X.Web.MetaExtractor\X.Web.MetaExtractor.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Include="FsHttpPageContentLoader.fs" />
+    </ItemGroup>
+
 </Project>
