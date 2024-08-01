@@ -7,10 +7,6 @@
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
         <PackageIcon>x-web.png</PackageIcon>
         
-        <ItemGroup>
-            <None Include="../../x-web.png" Pack="True" PackagePath=""/>
-        </ItemGroup>
-
         <Authors>Andrew Gubskiy</Authors>
         <Copyright>Andrew Gubskiy © 2024</Copyright>
         <Company>Ukrainian .NET Developer Community</Company>
