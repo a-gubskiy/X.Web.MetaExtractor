@@ -39,8 +39,13 @@ public class HttpClientPageContentLoader : IPageContentLoader
         return await ReadFromResponseAsync(bytes);
     }
     
-    protected static async Task<string> ReadFromResponseAsync(byte[] bytes)
+    protected static async Task<string> ReadFromResponseAsync(byte[]? bytes)
     {
+        if (bytes == null)
+        {
+            return string.Empty;
+        }
+        
         try
         {
             return await ReadFromGzipStreamAsync(new MemoryStream(bytes));
