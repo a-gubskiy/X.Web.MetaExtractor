@@ -5,20 +5,24 @@
 
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-        <PackageIconUrl>https://ru.gravatar.com/userimage/8071071/f2dc08ee7e4016451f64a7ae9cffd110.png?size=200</PackageIconUrl>
+        <PackageIcon>x-web.png</PackageIcon>
+        
+        <ItemGroup>
+            <None Include="../../x-web.png" Pack="True" PackagePath=""/>
+        </ItemGroup>
 
         <Authors>Andrew Gubskiy</Authors>
         <Copyright>Andrew Gubskiy © 2024</Copyright>
         <Company>Ukrainian .NET Developer Community</Company>
 
-        <Version>2.0.3</Version>
-        <AssemblyVersion>2.0.3</AssemblyVersion>
-        <FileVersion>2.0.3</FileVersion>
-        <PackageVersion>2.0.3</PackageVersion>
+        <Version>2.0.4</Version>
+        <AssemblyVersion>2.0.4</AssemblyVersion>
+        <FileVersion>2.0.4</FileVersion>
+        <PackageVersion>2.0.4</PackageVersion>
 
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
-        <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>        
+        <PackageProjectUrl>https://andrew.gubskiy.com/open-source</PackageProjectUrl>        
     </PropertyGroup>
 
 </Project>
