@@ -1,34 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
     <PropertyGroup>
-        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Description>X.Web.MetaExtractor.ContentLoaders.Flurl provides a content loader using the Flurl HTTP library, enabling efficient and fluent HTTP request handling for meta information extraction from any page URL.</Description>
-        <PackageProjectUrl>https://github.com/dncuug/X.Web.MetaExtractor</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <Copyright>Andrew Gubskiy</Copyright>
-        <PackageTags>open graph, net core, metadata, dncuug</PackageTags>
-        <PackageIconUrl>https://ru.gravatar.com/userimage/8071071/f2dc08ee7e4016451f64a7ae9cffd110.png?size=200</PackageIconUrl>
-        <LangVersion>default</LangVersion>
-        <PackageVersion>2.0.2</PackageVersion>
         <Title>X.Web.MetaExtractor</Title>
-        <AssemblyVersion>2.0.2</AssemblyVersion>
-        <FileVersion>2.0.2</FileVersion>
+        <Description>X.Web.MetaExtractor is a powerful library that allows you to extract meta information from any web page.</Description>
+
+        <LangVersion>default</LangVersion>
         <TargetFrameworks>net6.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+
+        <PackageTags>web html metadata</PackageTags>
+
         <Nullable>enable</Nullable>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE</PackageLicenseFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\LICENSE" Pack="true" PackagePath=""/>
+        <None Include="..\..\LICENSE.md" Pack="true" PackagePath=""/>
         <None Include="..\..\README.md" Pack="true" PackagePath=""/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="../../x-web.png" Pack="True" PackagePath=""/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2024.2.0" PrivateAssets="All"/>
-        <PackageReference Include="HtmlAgilityPack" Version="1.11.61"/>
+        <PackageReference Include="HtmlAgilityPack" Version="1.11.62" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
         <PackageReference Include="System.Collections.Immutable" Version="8.0.0"/>
     </ItemGroup>
-
 </Project>
