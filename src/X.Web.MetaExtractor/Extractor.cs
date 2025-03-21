@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
@@ -41,10 +42,13 @@ public class Extractor : IExtractor
     /// Extracts metadata from an HTML document.
     /// </summary>
     /// <param name="uri">The URI of the HTML document.</param>
+    /// <param name="cancellationToken">
+    /// A cancellation token that can be used to cancel the operation.
+    /// </param>
     /// <returns>A Metadata object containing various extracted information from the HTML document.</returns>
-    public async Task<Metadata> ExtractAsync(Uri uri)
+    public async Task<Metadata> Extract(Uri uri, CancellationToken cancellationToken)
     {
-        var html = await _pageContentLoader.LoadPageContentAsync(uri);
+        var html = await _pageContentLoader.LoadPageContent(uri, cancellationToken);
 
         var document = CreateHtmlDocument(html);
 

@@ -11,7 +11,7 @@ IExtractor extractor = new Extractor(defaultImage, contentLoader, languageDetect
 
 // Extract meta information from a URL
 var uri = new Uri("https://andrew.gubskiy.com/content/item/about");
-var metaInfo = await extractor.ExtractAsync(uri);
+var metaInfo = await extractor.Extract(uri);
 
 Console.Clear();
 

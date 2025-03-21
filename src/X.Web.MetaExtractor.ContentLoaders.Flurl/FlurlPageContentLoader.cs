@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Flurl.Http;
 using JetBrains.Annotations;
@@ -8,9 +9,9 @@ namespace X.Web.MetaExtractor.ContentLoaders.Flurl;
 [PublicAPI]
 public class FlurlPageContentLoader : IPageContentLoader
 {
-    public async Task<string> LoadPageContentAsync(Uri uri)
+    public async Task<string> LoadPageContent(Uri uri, CancellationToken cancellationToken)
     {
-        var html = await uri.ToString().GetStringAsync();
+        var html = await uri.ToString().GetStringAsync(cancellationToken: cancellationToken);
         
         return html;
     }

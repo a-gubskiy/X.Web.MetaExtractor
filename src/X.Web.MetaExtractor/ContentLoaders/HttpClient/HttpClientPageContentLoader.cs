@@ -2,6 +2,7 @@
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
@@ -29,23 +30,23 @@ public class HttpClientPageContentLoader : IPageContentLoader
     {
     }
 
-    public virtual async Task<string> LoadPageContentAsync(Uri uri)
+    public async Task<string> LoadPageContent(Uri uri, CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
         var client = _httpClientFactory.CreateClient(_httpClientName);
-        var response = await client.SendAsync(request);
-        var bytes = await response.Content.ReadAsByteArrayAsync();
+        var response = await client.SendAsync(request, cancellationToken);
+        var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
         return await ReadFromResponseAsync(bytes);
     }
-    
+
     protected static async Task<string> ReadFromResponseAsync(byte[]? bytes)
     {
         if (bytes == null)
         {
             return string.Empty;
         }
-        
+
         try
         {
             return await ReadFromGzipStreamAsync(new MemoryStream(bytes));

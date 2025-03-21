@@ -12,11 +12,11 @@ public class RestSharpPageContentLoaderTests
     {
         IPageContentLoader contentLoader = new RestSharpPageContentLoader();
         
-        var task1 = contentLoader.LoadPageContentAsync(new Uri("http://andrew.gubskiy.com/"));
-        var task2 = contentLoader.LoadPageContentAsync(new Uri("http://torf.tv/"));
-        var task3 = contentLoader.LoadPageContentAsync(new Uri("http://torf.tv/video/IraSkladPortrait"));
-        var task4 = contentLoader.LoadPageContentAsync(new Uri("https://en.wikipedia.org/wiki/Oceanic_whitetip_shark"));
-        var task5 = contentLoader.LoadPageContentAsync(new Uri("https://devdigest.today/platform/"));
+        var task1 = contentLoader.LoadPageContent(new Uri("http://andrew.gubskiy.com/"));
+        var task2 = contentLoader.LoadPageContent(new Uri("http://torf.tv/"));
+        var task3 = contentLoader.LoadPageContent(new Uri("http://torf.tv/video/IraSkladPortrait"));
+        var task4 = contentLoader.LoadPageContent(new Uri("https://en.wikipedia.org/wiki/Oceanic_whitetip_shark"));
+        var task5 = contentLoader.LoadPageContent(new Uri("https://devdigest.today/platform/"));
 
         var all = await Task.WhenAll(task1, task2, task3, task4, task5);
 
