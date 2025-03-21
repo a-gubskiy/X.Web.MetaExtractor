@@ -92,7 +92,13 @@ public class Extractor : IExtractor
     private static IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
     {
         var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
-        var value = node != null ? HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty) : string.Empty;
+        var value = string.Empty;
+
+        if (node != null)
+        {
+            var content = node.Attributes["content"]?.Value ?? string.Empty;
+            value = HtmlDecode(content);
+        }
 
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -113,11 +119,11 @@ public class Extractor : IExtractor
     {
         var result = new List<KeyValuePair<string, string>>();
 
-        var list = document?.DocumentNode?.SelectNodes("//meta");
+        var list = document.DocumentNode?.SelectNodes("//meta");
 
         if (list == null || !list.Any())
         {
-            return new List<KeyValuePair<string, string>>();
+            return ImmutableArray<KeyValuePair<string, string>>.Empty;
         }
 
         foreach (var node in list)
@@ -141,13 +147,21 @@ public class Extractor : IExtractor
     {
         var description = ReadOpenGraphProperty(document, "og:description");
 
-        if (string.IsNullOrWhiteSpace(description))
+        if (!string.IsNullOrWhiteSpace(description))
         {
-            var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
-            description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty) : string.Empty;
+            return description;
         }
 
-        return description;
+        var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
+
+        if (node == null)
+        {
+            return string.Empty;
+        }
+
+        var content = node.Attributes["content"]?.Value;
+
+        return HtmlDecode(content ?? string.Empty);
     }
 
     private static IReadOnlyCollection<string> ExtractImages(HtmlDocument document, string defaultImage)
@@ -179,7 +193,7 @@ public class Extractor : IExtractor
     private static HtmlDocument CreateHtmlDocument(string html)
     {
         var document = new HtmlDocument();
-        document.LoadHtml(html ?? string.Empty);
+        document.LoadHtml(html);
 
         return document;
     }
@@ -187,7 +201,7 @@ public class Extractor : IExtractor
     private static string ReadOpenGraphProperty(HtmlDocument document, string name)
     {
         var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
-        return HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty).Trim() ?? string.Empty;
+        return HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty).Trim();
     }
 
     private static string HtmlDecode(string text)
