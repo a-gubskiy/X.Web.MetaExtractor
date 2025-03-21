@@ -37,10 +37,10 @@ public class HttpClientPageContentLoader : IPageContentLoader
         var response = await client.SendAsync(request, cancellationToken);
         var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
 
-        return await ReadFromResponseAsync(bytes);
+        return await ReadFromResponse(bytes);
     }
 
-    protected static async Task<string> ReadFromResponseAsync(byte[]? bytes)
+    protected static async Task<string> ReadFromResponse(byte[]? bytes)
     {
         if (bytes == null)
         {
@@ -49,15 +49,15 @@ public class HttpClientPageContentLoader : IPageContentLoader
 
         try
         {
-            return await ReadFromGzipStreamAsync(new MemoryStream(bytes));
+            return await ReadFromGzipStream(new MemoryStream(bytes));
         }
         catch
         {
-            return await ReadFromStandardStreamAsync(new MemoryStream(bytes));
+            return await ReadFromStandardStream(new MemoryStream(bytes));
         }
     }
 
-    private static async Task<string> ReadFromStandardStreamAsync(Stream stream)
+    private static async Task<string> ReadFromStandardStream(Stream stream)
     {
         using (var reader = new StreamReader(stream))
         {
@@ -65,7 +65,7 @@ public class HttpClientPageContentLoader : IPageContentLoader
         }
     }
 
-    private static async Task<string> ReadFromGzipStreamAsync(Stream stream)
+    private static async Task<string> ReadFromGzipStream(Stream stream)
     {
         using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
         using (var reader = new StreamReader(deflateStream))

@@ -12,6 +12,15 @@ using X.Web.MetaExtractor.LanguageDetectors;
 
 namespace X.Web.MetaExtractor;
 
+/// <summary>
+/// Implements the <see cref="IExtractor"/> interface to extract metadata from web pages.
+/// Extracts various elements like title, description, keywords, images, and language from HTML content.
+/// </summary>
+/// <remarks>
+/// This class provides multiple constructors for customization including specifying a default image,
+/// custom page content loader, and language detector. It handles extraction of OpenGraph properties
+/// and standard HTML metadata.
+/// </remarks>
 public class Extractor : IExtractor
 {
     [PublicAPI]
@@ -38,14 +47,7 @@ public class Extractor : IExtractor
         _pageContentLoader = pageContentLoader;
     }
 
-    /// <summary>
-    /// Extracts metadata from an HTML document.
-    /// </summary>
-    /// <param name="uri">The URI of the HTML document.</param>
-    /// <param name="cancellationToken">
-    /// A cancellation token that can be used to cancel the operation.
-    /// </param>
-    /// <returns>A Metadata object containing various extracted information from the HTML document.</returns>
+    /// <inheritdoc />
     public async Task<Metadata> Extract(Uri uri, CancellationToken cancellationToken)
     {
         var html = await _pageContentLoader.LoadPageContent(uri, cancellationToken);
@@ -63,7 +65,7 @@ public class Extractor : IExtractor
         {
             Raw = html,
             Url = uri.ToString(),
-            
+
             Title = title,
             Keywords = keywords,
             MetaTags = metatags,
@@ -86,7 +88,7 @@ public class Extractor : IExtractor
 
         return title;
     }
-    
+
     private static IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
     {
         var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
@@ -103,10 +105,10 @@ public class Extractor : IExtractor
             .Where(o => !string.IsNullOrWhiteSpace(o))
             .Select(o => o!)
             .ToImmutableList();
-        
+
         return result;
     }
-    
+
     private static IReadOnlyCollection<KeyValuePair<string, string>> ExtractMetaTags(HtmlDocument document)
     {
         var result = new List<KeyValuePair<string, string>>();
@@ -144,10 +146,10 @@ public class Extractor : IExtractor
             var node = document.DocumentNode.SelectSingleNode("//meta[@name='description']");
             description = node != null ? HtmlDecode(node?.Attributes["content"]?.Value ?? string.Empty) : string.Empty;
         }
-        
+
         return description;
     }
-    
+
     private static IReadOnlyCollection<string> ExtractImages(HtmlDocument document, string defaultImage)
     {
         var image = ReadOpenGraphProperty(document, "og:image");
@@ -191,7 +193,7 @@ public class Extractor : IExtractor
     private static string HtmlDecode(string text)
     {
         var result = string.IsNullOrWhiteSpace(text) ? string.Empty : WebUtility.HtmlDecode(text);
-        
-        return result ?? string.Empty;
+
+        return result;
     }
 }
