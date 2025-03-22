@@ -35,7 +35,7 @@ public class Extractor : IExtractor
     private readonly MetaHtmlDocumentExtractor _metaHtmlDocumentExtractor;
     private readonly DescriptionHtmlDocumentExtractor _descriptionHtmlDocumentExtractor;
     private readonly ImageHtmlDocumentExtractor _imageHtmlDocumentExtractor;
-    private readonly LinksDocumentExtractor _linksDocumentExtractor;
+    private readonly LinksHtmlDocumentExtractor _linksHtmlDocumentExtractor;
     
 
     public Extractor()
@@ -52,7 +52,7 @@ public class Extractor : IExtractor
     {
         _languageDetector = languageDetector;
         _contentLoader = contentLoader;
-        _linksDocumentExtractor = new LinksDocumentExtractor();
+        _linksHtmlDocumentExtractor = new LinksHtmlDocumentExtractor();
         _titleHtmlDocumentExtractor = new TitleHtmlDocumentExtractor();
         _keywordsHtmlDocumentExtractor = new KeywordsHtmlDocumentExtractor();
         _metaHtmlDocumentExtractor = new MetaHtmlDocumentExtractor();
@@ -72,7 +72,7 @@ public class Extractor : IExtractor
         var meta = _metaHtmlDocumentExtractor.Extract(document);
         var description = _descriptionHtmlDocumentExtractor.Extract(document);
         var images = _imageHtmlDocumentExtractor.Extract(document);
-        var links = _linksDocumentExtractor.Extract(document);
+        var links = _linksHtmlDocumentExtractor.Extract(document);
         var language = _languageDetector.GetHtmlPageLanguage(html);
 
         return new WebPage

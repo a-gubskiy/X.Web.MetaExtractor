@@ -4,7 +4,7 @@ using X.Web.MetaExtractor.Models;
 
 namespace X.Web.MetaExtractor.Extractors;
 
-public class LinksDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollection<Link>>
+public class LinksHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollection<Link>>
 {
     protected override IReadOnlyCollection<Link> ExtractInternal(HtmlDocument document)
     {
