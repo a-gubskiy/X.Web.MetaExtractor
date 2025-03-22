@@ -27,20 +27,17 @@ public class Extractor : IExtractor
     [PublicAPI]
     public int MaxDescriptionLength { get; set; } = 300;
 
-    private readonly string _defaultImage;
     private readonly IContentLoader _contentLoader;
     private readonly ILanguageDetector _languageDetector;
-
-    private readonly TitleExtractor _titleExtractor;
-    private readonly KeywordsExtractor _keywordsExtractor;
-    private readonly MetaTagsExtractor _metaTagsExtractor;
-    private readonly DescriptionExtractor _descriptionExtractor;
-    private readonly ImageExtractor _imageExtractor;
+    private readonly TitleHtmlDocumentExtractor _titleHtmlDocumentExtractor;
+    private readonly KeywordsHtmlDocumentExtractor _keywordsHtmlDocumentExtractor;
+    private readonly MetaHtmlDocumentExtractor _metaHtmlDocumentExtractor;
+    private readonly DescriptionHtmlDocumentExtractor _descriptionHtmlDocumentExtractor;
+    private readonly ImageHtmlDocumentExtractor _imageHtmlDocumentExtractor;
 
     public Extractor()
         : this(string.Empty, new HttpClientContentLoader(), new LanguageDetector())
     {
-        
     }
 
     public Extractor(string defaultImage)
@@ -50,14 +47,13 @@ public class Extractor : IExtractor
 
     public Extractor(string defaultImage, IContentLoader contentLoader, ILanguageDetector languageDetector)
     {
-        _defaultImage = defaultImage;
         _languageDetector = languageDetector;
         _contentLoader = contentLoader;
-        _titleExtractor = new TitleExtractor();
-        _keywordsExtractor = new KeywordsExtractor();
-        _metaTagsExtractor = new MetaTagsExtractor();
-        _descriptionExtractor = new DescriptionExtractor();
-        _imageExtractor = new ImageExtractor(_defaultImage);
+        _titleHtmlDocumentExtractor = new TitleHtmlDocumentExtractor();
+        _keywordsHtmlDocumentExtractor = new KeywordsHtmlDocumentExtractor();
+        _metaHtmlDocumentExtractor = new MetaHtmlDocumentExtractor();
+        _descriptionHtmlDocumentExtractor = new DescriptionHtmlDocumentExtractor();
+        _imageHtmlDocumentExtractor = new ImageHtmlDocumentExtractor(defaultImage);
     }
 
     /// <inheritdoc />
@@ -67,18 +63,17 @@ public class Extractor : IExtractor
 
         var document = CreateHtmlDocument(html);
 
-        var title = _titleExtractor.ExtractTitle(document);
-        var keywords = _keywordsExtractor.ExtractKeywords(document);
-        var meta = _metaTagsExtractor.ExtractMeta(document);
-        var description = _descriptionExtractor.ExtractDescription(document);
-        var images = _imageExtractor.ExtractImages(document);
+        var title = _titleHtmlDocumentExtractor.Extract(document);
+        var keywords = _keywordsHtmlDocumentExtractor.Extract(document);
+        var meta = _metaHtmlDocumentExtractor.Extract(document);
+        var description = _descriptionHtmlDocumentExtractor.Extract(document);
+        var images = _imageHtmlDocumentExtractor.Extract(document);
         var language = _languageDetector.GetHtmlPageLanguage(html);
 
         return new Metadata
         {
             Raw = html,
             Url = uri,
-
             Title = title,
             Keywords = keywords,
             MetaTags = meta,

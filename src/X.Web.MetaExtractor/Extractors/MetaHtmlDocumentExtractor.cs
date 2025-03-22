@@ -5,9 +5,9 @@ using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor.Extractors;
 
-public class MetaTagsExtractor : ExtractorBase
+public class MetaHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollection<KeyValuePair<string, string>>>
 {
-    public IReadOnlyCollection<KeyValuePair<string, string>> ExtractMeta(HtmlDocument document)
+    public override IReadOnlyCollection<KeyValuePair<string, string>> Extract(HtmlDocument document)
     {
         var result = new List<KeyValuePair<string, string>>();
 
@@ -34,6 +34,6 @@ public class MetaTagsExtractor : ExtractorBase
 
         return result.ToImmutableList();
     }
-    
+
     private static string OneOf(string a, string b) => string.IsNullOrWhiteSpace(b) ? a : b;
 }

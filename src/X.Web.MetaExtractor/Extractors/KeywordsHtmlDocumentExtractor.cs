@@ -5,9 +5,9 @@ using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor.Extractors;
 
-public class KeywordsExtractor : ExtractorBase
+public class KeywordsHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollection<string>>
 {
-    public IReadOnlyCollection<string> ExtractKeywords(HtmlDocument document)
+    public override IReadOnlyCollection<string> Extract(HtmlDocument document)
     {
         var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
         var value = string.Empty;

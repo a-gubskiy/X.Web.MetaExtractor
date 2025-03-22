@@ -2,9 +2,9 @@ using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor.Extractors;
 
-public class DescriptionExtractor : ExtractorBase
+public class DescriptionHtmlDocumentExtractor : HtmlDocumentExtractor<string>
 {
-    public string ExtractDescription(HtmlDocument document)
+    public override string Extract(HtmlDocument document)
     {
         var description = ReadOpenGraphProperty(document, "og:description");
 

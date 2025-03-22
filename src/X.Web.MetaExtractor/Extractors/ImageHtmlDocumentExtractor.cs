@@ -5,16 +5,16 @@ using HtmlAgilityPack;
 
 namespace X.Web.MetaExtractor.Extractors;
 
-public class ImageExtractor : ExtractorBase
+public class ImageHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollection<string>>
 {
     private readonly string _defaultImage;
 
-    public ImageExtractor(string defaultImage)
+    public ImageHtmlDocumentExtractor(string defaultImage)
     {
         _defaultImage = defaultImage;
     }
 
-    public IReadOnlyCollection<string> ExtractImages(HtmlDocument document)
+    public override IReadOnlyCollection<string> Extract(HtmlDocument document)
     {
         var image = ReadOpenGraphProperty(document, "og:image");
 
