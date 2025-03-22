@@ -11,10 +11,10 @@
         <Copyright>Andrew Gubskiy © 2025</Copyright>
         <Company>Ukrainian .NET Developer Community</Company>
 
-        <Version>2.0.5</Version>
-        <AssemblyVersion>2.0.5</AssemblyVersion>
-        <FileVersion>2.0.5</FileVersion>
-        <PackageVersion>2.0.5</PackageVersion>
+        <Version>3.0.1</Version>
+        <AssemblyVersion>3.0.1</AssemblyVersion>
+        <FileVersion>3.0.1</FileVersion>
+        <PackageVersion>3.0.1</PackageVersion>
 
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
