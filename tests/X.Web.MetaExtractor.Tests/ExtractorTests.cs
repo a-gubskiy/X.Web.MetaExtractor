@@ -50,12 +50,12 @@ public class ExtractorTests
         var languageDetector = new LanguageDetector();
         IExtractor extractor = new Extractor("", contentLoader, languageDetector);
           
-        var metaData1 = await extractor.Extract(new Uri("https://codeshare.co.uk/blog/how-to-scrape-meta-data-from-a-url-using-htmlagilitypack-in-c/"));
-        var metaData2 = await extractor.Extract(new Uri("https://diepresse.com/home/techscience/5526578/Daten-sichern_WhatsApp-loescht-am-12-November-Chatverlaeufe"));
+        var webPage1 = await extractor.Extract(new Uri("https://codeshare.co.uk/blog/how-to-scrape-meta-data-from-a-url-using-htmlagilitypack-in-c/"));
+        var webPage2 = await extractor.Extract(new Uri("https://diepresse.com/home/techscience/5526578/Daten-sichern_WhatsApp-loescht-am-12-November-Chatverlaeufe"));
             
-        var articleSection = metaData2.Metadata.Where(o => o.Key == "og:description").Select(o => o.Value).FirstOrDefault();
+        var articleSection = webPage2.Metadata.Where(o => o.Key == "og:description").Select(o => o.Value).FirstOrDefault();
             
-        Assert.NotEmpty(metaData1.Metadata);
+        Assert.NotEmpty(webPage1.Metadata);
         Assert.NotEmpty(articleSection);
     }
 }

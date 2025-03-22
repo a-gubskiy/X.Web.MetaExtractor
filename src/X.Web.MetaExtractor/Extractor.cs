@@ -35,6 +35,8 @@ public class Extractor : IExtractor
     private readonly MetaHtmlDocumentExtractor _metaHtmlDocumentExtractor;
     private readonly DescriptionHtmlDocumentExtractor _descriptionHtmlDocumentExtractor;
     private readonly ImageHtmlDocumentExtractor _imageHtmlDocumentExtractor;
+    private readonly LinksDocumentExtractor _linksDocumentExtractor;
+    
 
     public Extractor()
         : this(string.Empty, new HttpClientContentLoader(), new LanguageDetector())
@@ -50,6 +52,7 @@ public class Extractor : IExtractor
     {
         _languageDetector = languageDetector;
         _contentLoader = contentLoader;
+        _linksDocumentExtractor = new LinksDocumentExtractor();
         _titleHtmlDocumentExtractor = new TitleHtmlDocumentExtractor();
         _keywordsHtmlDocumentExtractor = new KeywordsHtmlDocumentExtractor();
         _metaHtmlDocumentExtractor = new MetaHtmlDocumentExtractor();
@@ -69,7 +72,7 @@ public class Extractor : IExtractor
         var meta = _metaHtmlDocumentExtractor.Extract(document);
         var description = _descriptionHtmlDocumentExtractor.Extract(document);
         var images = _imageHtmlDocumentExtractor.Extract(document);
-
+        var links = _linksDocumentExtractor.Extract(document);
         var language = _languageDetector.GetHtmlPageLanguage(html);
 
         return new WebPage
@@ -79,6 +82,7 @@ public class Extractor : IExtractor
                 Raw = html,
                 Url = uri,
             },
+            Links = links ?? ImmutableList<Link>.Empty,
             Title = title ?? string.Empty,
             Keywords = keywords ?? ImmutableList<string>.Empty,
             Metadata = meta ?? ImmutableList<KeyValuePair<string, string>>.Empty,

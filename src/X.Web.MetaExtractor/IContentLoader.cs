@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor;
+
 /// <summary>
 /// Interface for loading web page content from a specified URI.
 /// </summary>
@@ -19,7 +20,7 @@ public interface IContentLoader
     /// A task that represents the asynchronous operation. The task result contains the page content as a string.
     /// </returns>
     Task<string> Load(Uri uri, CancellationToken cancellationToken);
-    
+
     /// <summary>
     /// Loads the content of a web page from the specified URI.
     /// </summary>

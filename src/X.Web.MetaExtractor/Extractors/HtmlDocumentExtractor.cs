@@ -74,8 +74,7 @@ public abstract class HtmlDocumentExtractor<T> : IHtmlDocumentExtractor<T>
     /// <param name="document">The HTML document to extract data from.</param>
     /// <returns>The extracted data of type T.</returns>
     protected abstract T ExtractInternal(HtmlDocument document);
-
-
+    
     public T? Extract(HtmlDocument document)
     {
         try

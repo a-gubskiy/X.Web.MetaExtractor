@@ -22,6 +22,7 @@ public record WebPage
         Title = string.Empty;
         Description = string.Empty;
         Language = string.Empty;
+        Links = ImmutableList<Link>.Empty;
         Images = ImmutableArray<string>.Empty;
         Keywords = ImmutableArray<string>.Empty;
         Metadata = ImmutableArray<KeyValuePair<string, string>>.Empty;
@@ -46,6 +47,8 @@ public record WebPage
     /// Gets or initializes the collection of image URLs found in the web content.
     /// </summary>
     public IReadOnlyCollection<string> Images { get; init; }
+    
+    public IReadOnlyCollection<Link> Links { get; init; }
 
     /// <summary>
     /// Gets or initializes the collection of keywords associated with the web content.
