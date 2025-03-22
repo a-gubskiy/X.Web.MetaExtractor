@@ -12,11 +12,11 @@ public class RestSharpContentLoaderTests
     {
         IContentLoader contentLoader = new RestSharpContentLoader();
         
-        var task1 = contentLoader.LoadPageContent(new Uri("http://andrew.gubskiy.com/"));
-        var task2 = contentLoader.LoadPageContent(new Uri("http://torf.tv/"));
-        var task3 = contentLoader.LoadPageContent(new Uri("http://torf.tv/video/IraSkladPortrait"));
-        var task4 = contentLoader.LoadPageContent(new Uri("https://en.wikipedia.org/wiki/Oceanic_whitetip_shark"));
-        var task5 = contentLoader.LoadPageContent(new Uri("https://devdigest.today/platform/"));
+        var task1 = contentLoader.Load(new Uri("http://andrew.gubskiy.com/"));
+        var task2 = contentLoader.Load(new Uri("http://torf.tv/"));
+        var task3 = contentLoader.Load(new Uri("http://torf.tv/video/IraSkladPortrait"));
+        var task4 = contentLoader.Load(new Uri("https://en.wikipedia.org/wiki/Oceanic_whitetip_shark"));
+        var task5 = contentLoader.Load(new Uri("https://devdigest.today/platform/"));
 
         var all = await Task.WhenAll(task1, task2, task3, task4, task5);
 

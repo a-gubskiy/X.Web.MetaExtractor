@@ -48,7 +48,7 @@ public abstract class HtmlDocumentExtractor<T> : IHtmlDocumentExtractor<T>
     {
         var node = document.DocumentNode.SelectSingleNode($"//meta[@property='{name}']");
         var content = node?.Attributes["content"]?.Value ?? string.Empty;
-        var result = HtmlDecode(content).Trim();
+        var result = HtmlDecode(content);
 
         return result;
     }
@@ -64,7 +64,7 @@ public abstract class HtmlDocumentExtractor<T> : IHtmlDocumentExtractor<T>
             ? string.Empty
             : WebUtility.HtmlDecode(text);
 
-        return result;
+        return result.Trim();
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public abstract class HtmlDocumentExtractor<T> : IHtmlDocumentExtractor<T>
     /// <returns>The extracted data of type T.</returns>
     protected abstract T ExtractInternal(HtmlDocument document);
 
-    
+
     public T? Extract(HtmlDocument document)
     {
         try

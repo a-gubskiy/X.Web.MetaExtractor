@@ -30,7 +30,7 @@ public class HttpClientContentLoader : IContentLoader
     {
     }
 
-    public async Task<string> LoadPageContent(Uri uri, CancellationToken cancellationToken)
+    public async Task<string> Load(Uri uri, CancellationToken cancellationToken)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, uri);
         var client = _httpClientFactory.CreateClient(_httpClientName);

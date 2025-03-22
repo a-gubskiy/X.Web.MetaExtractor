@@ -14,7 +14,7 @@ open JetBrains.Annotations
 [<PublicAPI>]
 type FsHttpPageContentLoader() =
     interface X.Web.MetaExtractor.IContentLoader with
-        member _.LoadPageContent(uri: Uri, cancellationToken: CancellationToken) : Task<string> =
+        member _.Load(uri: Uri, cancellationToken: CancellationToken) : Task<string> =
             task {
                 let url = uri.ToString()
 

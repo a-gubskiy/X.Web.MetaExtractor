@@ -26,7 +26,7 @@ public class ImageHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollect
 
         var images = document.DocumentNode
             .Descendants("img")
-            .Select(e => e.GetAttributeValue("src", null))
+            .Select(e => e.GetAttributeValue("src", ""))
             .Where(src => !string.IsNullOrWhiteSpace(src))
             .ToImmutableList();
 
@@ -35,6 +35,6 @@ public class ImageHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollect
             return ImmutableList.Create(_defaultImage);
         }
 
-        return images;
+        return images.ToImmutableList();
     }
 }

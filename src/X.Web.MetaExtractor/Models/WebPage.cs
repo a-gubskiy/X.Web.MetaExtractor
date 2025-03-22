@@ -1,42 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor;
-
-public record Content
-{
-    /// <summary>
-    /// URL of the web content.
-    /// </summary>
-    public required Uri Url { get; init; }
-
-    /// <summary>
-    /// Raw page content
-    /// </summary>
-    public required string Value { get; init; }
-}
 
 /// <summary>
 /// Represents metadata extracted from web content, containing properties like title, description,
 /// images, keywords, and other meta information.
 /// </summary>
 [PublicAPI]
-public record Metadata : Content
+public record WebPage
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Metadata"/> class with default empty values.
+    /// Initializes a new instance of the <see cref="WebPage"/> class with default empty values.
     /// </summary>
-    public Metadata()
+    public WebPage()
     {
+        Source = null;
         Title = string.Empty;
         Description = string.Empty;
-        Value = string.Empty;
         Language = string.Empty;
         Images = ImmutableArray<string>.Empty;
         Keywords = ImmutableArray<string>.Empty;
-        MetaTags = ImmutableArray<KeyValuePair<string, string>>.Empty;
+        Metadata = ImmutableArray<KeyValuePair<string, string>>.Empty;
     }
 
     /// <summary>
@@ -48,7 +36,7 @@ public record Metadata : Content
     /// Gets or initializes the description of the web content.
     /// </summary>
     public string Description { get; init; }
-    
+
     /// <summary>
     /// Gets or initializes the language of the web content.
     /// </summary>
@@ -67,5 +55,27 @@ public record Metadata : Content
     /// <summary>
     /// Gets or sets the collection of meta tags extracted from the web content.
     /// </summary>
-    public IReadOnlyCollection<KeyValuePair<string, string>> MetaTags { get; set; }
+    public IReadOnlyCollection<KeyValuePair<string, string>> Metadata { get; init; }
+
+    /// <summary>
+    /// Gets a collection of Open Graph protocol metadata.
+    /// </summary>
+    /// <remarks>
+    /// This property returns all metadata entries with keys that start with "og:" prefix (case-insensitive),
+    /// which conform to the Open Graph protocol standard used for social media integration.
+    /// </remarks>
+    /// <returns>A read-only collection of key-value pairs representing Open Graph metadata.</returns>
+    public IReadOnlyCollection<KeyValuePair<string, string>> OpenGraph
+    {
+        get
+        {
+            
+            
+            return Metadata
+                .Where(o => o.Key.StartsWith("og:", StringComparison.InvariantCultureIgnoreCase))
+                .ToImmutableList();
+        }
+    }
+
+    public Source? Source { get; init; }
 }

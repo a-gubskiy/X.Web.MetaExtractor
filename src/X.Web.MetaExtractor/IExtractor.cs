@@ -18,7 +18,7 @@ public interface IExtractor
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the extracted metadata.
     /// </returns>
-    Task<Metadata> Extract(Uri uri) => Extract(uri, CancellationToken.None);
+    Task<WebPage> Extract(Uri uri) => Extract(uri, CancellationToken.None);
     
     /// <summary>
     /// Extracts metadata from a web page at the specified URI with cancellation support.
@@ -28,5 +28,5 @@ public interface IExtractor
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the extracted metadata.
     /// </returns>
-    Task<Metadata> Extract(Uri uri, CancellationToken cancellationToken);
+    Task<WebPage> Extract(Uri uri, CancellationToken cancellationToken);
 }

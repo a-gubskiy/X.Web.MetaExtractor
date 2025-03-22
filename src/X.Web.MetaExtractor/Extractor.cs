@@ -57,9 +57,9 @@ public class Extractor : IExtractor
     }
 
     /// <inheritdoc />
-    public async Task<Metadata> Extract(Uri uri, CancellationToken cancellationToken)
+    public async Task<WebPage> Extract(Uri uri, CancellationToken cancellationToken)
     {
-        var html = await _contentLoader.LoadPageContent(uri, cancellationToken);
+        var html = await _contentLoader.Load(uri, cancellationToken);
 
         var document = CreateHtmlDocument(html);
 
@@ -71,13 +71,16 @@ public class Extractor : IExtractor
 
         var language = _languageDetector.GetHtmlPageLanguage(html);
 
-        return new Metadata
+        return new WebPage
         {
-            Value = html,
-            Url = uri,
+            Source = new Source
+            {
+                Raw = html,
+                Url = uri,
+            },
             Title = title ?? string.Empty,
             Keywords = keywords ?? ImmutableList<string>.Empty,
-            MetaTags = meta ?? ImmutableList<KeyValuePair<string, string>>.Empty,
+            Metadata = meta ?? ImmutableList<KeyValuePair<string, string>>.Empty,
             Description = description ?? string.Empty,
             Images = images ?? ImmutableList<string>.Empty,
             Language = language

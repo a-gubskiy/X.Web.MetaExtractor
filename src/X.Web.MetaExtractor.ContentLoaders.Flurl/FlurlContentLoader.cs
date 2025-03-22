@@ -9,7 +9,7 @@ namespace X.Web.MetaExtractor.ContentLoaders.Flurl;
 [PublicAPI]
 public class FlurlContentLoader : IContentLoader
 {
-    public async Task<string> LoadPageContent(Uri uri, CancellationToken cancellationToken)
+    public async Task<string> Load(Uri uri, CancellationToken cancellationToken)
     {
         var html = await uri.ToString().GetStringAsync(cancellationToken: cancellationToken);
         

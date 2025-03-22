@@ -10,7 +10,7 @@ namespace X.Web.MetaExtractor.ContentLoaders.RestSharp;
 [PublicAPI]
 public class RestSharpContentLoader : IContentLoader
 {
-    public async Task<string> LoadPageContent(Uri uri, CancellationToken cancellationToken)
+    public async Task<string> Load(Uri uri, CancellationToken cancellationToken)
     {
         if (uri == null)
         {

@@ -18,7 +18,7 @@ public interface IContentLoader
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the page content as a string.
     /// </returns>
-    Task<string> LoadPageContent(Uri uri, CancellationToken cancellationToken);
+    Task<string> Load(Uri uri, CancellationToken cancellationToken);
     
     /// <summary>
     /// Loads the content of a web page from the specified URI.
@@ -27,5 +27,5 @@ public interface IContentLoader
     /// <returns>
     /// A task that represents the asynchronous operation. The task result contains the page content as a string.
     /// </returns>
-    Task<string> LoadPageContent(Uri uri) => LoadPageContent(uri, CancellationToken.None);
+    Task<string> Load(Uri uri) => Load(uri, CancellationToken.None);
 }
