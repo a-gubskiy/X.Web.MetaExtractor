@@ -10,6 +10,7 @@ using JetBrains.Annotations;
 using X.Web.MetaExtractor.ContentLoaders.HttpClient;
 using X.Web.MetaExtractor.Extractors;
 using X.Web.MetaExtractor.LanguageDetectors;
+using X.Web.MetaExtractor.Models;
 
 namespace X.Web.MetaExtractor;
 

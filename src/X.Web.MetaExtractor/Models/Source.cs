@@ -1,6 +1,6 @@
 using System;
 
-namespace X.Web.MetaExtractor;
+namespace X.Web.MetaExtractor.Models;
 
 public record Source
 {

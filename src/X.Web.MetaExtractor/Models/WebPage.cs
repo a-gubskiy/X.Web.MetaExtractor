@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace X.Web.MetaExtractor;
+namespace X.Web.MetaExtractor.Models;
 
 /// <summary>
 /// Represents metadata extracted from web content, containing properties like title, description,
