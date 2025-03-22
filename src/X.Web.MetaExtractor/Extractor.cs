@@ -68,17 +68,18 @@ public class Extractor : IExtractor
         var meta = _metaHtmlDocumentExtractor.Extract(document);
         var description = _descriptionHtmlDocumentExtractor.Extract(document);
         var images = _imageHtmlDocumentExtractor.Extract(document);
+
         var language = _languageDetector.GetHtmlPageLanguage(html);
 
         return new Metadata
         {
-            Raw = html,
+            Value = html,
             Url = uri,
-            Title = title,
-            Keywords = keywords,
-            MetaTags = meta,
-            Description = description,
-            Images = images,
+            Title = title ?? string.Empty,
+            Keywords = keywords ?? ImmutableList<string>.Empty,
+            MetaTags = meta ?? ImmutableList<KeyValuePair<string, string>>.Empty,
+            Description = description ?? string.Empty,
+            Images = images ?? ImmutableList<string>.Empty,
             Language = language
         };
     }

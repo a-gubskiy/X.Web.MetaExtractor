@@ -4,7 +4,7 @@ namespace X.Web.MetaExtractor.Extractors;
 
 public class TitleHtmlDocumentExtractor : HtmlDocumentExtractor<string>
 {
-    public override string Extract(HtmlDocument document)
+    protected override string ExtractInternal(HtmlDocument document)
     {
         var title = ReadOpenGraphProperty(document, "og:title");
 

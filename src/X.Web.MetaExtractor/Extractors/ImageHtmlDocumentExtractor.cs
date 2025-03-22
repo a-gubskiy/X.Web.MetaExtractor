@@ -14,7 +14,7 @@ public class ImageHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollect
         _defaultImage = defaultImage;
     }
 
-    public override IReadOnlyCollection<string> Extract(HtmlDocument document)
+    protected override IReadOnlyCollection<string> ExtractInternal(HtmlDocument document)
     {
         var image = ReadOpenGraphProperty(document, "og:image");
 

@@ -7,7 +7,7 @@ namespace X.Web.MetaExtractor.Extractors;
 
 public class KeywordsHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollection<string>>
 {
-    public override IReadOnlyCollection<string> Extract(HtmlDocument document)
+    protected override IReadOnlyCollection<string> ExtractInternal(HtmlDocument document)
     {
         var node = document.DocumentNode.SelectSingleNode("//meta[@name='keywords']");
         var value = string.Empty;

@@ -8,14 +8,14 @@ namespace X.Web.MetaExtractor;
 public record Content
 {
     /// <summary>
-    /// Gets or initializes the URL of the web content.
+    /// URL of the web content.
     /// </summary>
     public required Uri Url { get; init; }
 
     /// <summary>
-    /// Gets or initializes the raw content from which the metadata was extracted.
+    /// Raw page content
     /// </summary>
-    public required string Raw { get; init; }
+    public required string Value { get; init; }
 }
 
 /// <summary>
@@ -32,7 +32,7 @@ public record Metadata : Content
     {
         Title = string.Empty;
         Description = string.Empty;
-        Raw = string.Empty;
+        Value = string.Empty;
         Language = string.Empty;
         Images = ImmutableArray<string>.Empty;
         Keywords = ImmutableArray<string>.Empty;
@@ -48,8 +48,7 @@ public record Metadata : Content
     /// Gets or initializes the description of the web content.
     /// </summary>
     public string Description { get; init; }
-
-
+    
     /// <summary>
     /// Gets or initializes the language of the web content.
     /// </summary>
@@ -69,10 +68,4 @@ public record Metadata : Content
     /// Gets or sets the collection of meta tags extracted from the web content.
     /// </summary>
     public IReadOnlyCollection<KeyValuePair<string, string>> MetaTags { get; set; }
-
-    /// <summary>
-    /// Returns a string representation of the metadata including the title, description, and URL.
-    /// </summary>
-    /// <returns>A string containing the title, description, and URL, each on a separate line.</returns>
-    public override string ToString() => $"{Title}\r\n{Description}\r\n{Url}";
 }

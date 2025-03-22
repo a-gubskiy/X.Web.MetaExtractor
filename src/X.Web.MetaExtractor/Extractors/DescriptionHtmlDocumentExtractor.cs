@@ -4,7 +4,7 @@ namespace X.Web.MetaExtractor.Extractors;
 
 public class DescriptionHtmlDocumentExtractor : HtmlDocumentExtractor<string>
 {
-    public override string Extract(HtmlDocument document)
+    protected override string ExtractInternal(HtmlDocument document)
     {
         var description = ReadOpenGraphProperty(document, "og:description");
 

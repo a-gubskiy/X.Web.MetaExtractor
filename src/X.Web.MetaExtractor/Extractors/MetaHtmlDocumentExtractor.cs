@@ -7,7 +7,7 @@ namespace X.Web.MetaExtractor.Extractors;
 
 public class MetaHtmlDocumentExtractor : HtmlDocumentExtractor<IReadOnlyCollection<KeyValuePair<string, string>>>
 {
-    public override IReadOnlyCollection<KeyValuePair<string, string>> Extract(HtmlDocument document)
+    protected override IReadOnlyCollection<KeyValuePair<string, string>> ExtractInternal(HtmlDocument document)
     {
         var result = new List<KeyValuePair<string, string>>();
 

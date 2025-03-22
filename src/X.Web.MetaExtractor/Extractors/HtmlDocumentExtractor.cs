@@ -1,5 +1,8 @@
+using System;
 using System.Net;
 using HtmlAgilityPack;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace X.Web.MetaExtractor.Extractors;
 
@@ -14,7 +17,7 @@ public interface IHtmlDocumentExtractor<out T>
     /// </summary>
     /// <param name="document">The HTML document to process.</param>
     /// <returns>The extracted data of type T.</returns>
-    public T Extract(HtmlDocument document);
+    public T? Extract(HtmlDocument document);
 }
 
 /// <summary>
@@ -23,6 +26,18 @@ public interface IHtmlDocumentExtractor<out T>
 /// <typeparam name="T">The type of data to be extracted from the HTML document.</typeparam>
 public abstract class HtmlDocumentExtractor<T> : IHtmlDocumentExtractor<T>
 {
+    private readonly ILogger _logger;
+
+    public HtmlDocumentExtractor()
+        : this(new NullLogger<HtmlDocumentExtractor<T>>())
+    {
+    }
+
+    public HtmlDocumentExtractor(ILogger logger)
+    {
+        _logger = logger;
+    }
+
     /// <summary>
     /// Extracts the value of an Open Graph meta tag from the HTML document.
     /// </summary>
@@ -58,5 +73,20 @@ public abstract class HtmlDocumentExtractor<T> : IHtmlDocumentExtractor<T>
     /// </summary>
     /// <param name="document">The HTML document to extract data from.</param>
     /// <returns>The extracted data of type T.</returns>
-    public abstract T Extract(HtmlDocument document);
+    protected abstract T ExtractInternal(HtmlDocument document);
+
+    
+    public T? Extract(HtmlDocument document)
+    {
+        try
+        {
+            return ExtractInternal(document);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+
+            return default;
+        }
+    }
 }
