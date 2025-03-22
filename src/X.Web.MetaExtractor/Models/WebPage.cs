@@ -47,7 +47,7 @@ public record WebPage
     /// Gets or initializes the collection of image URLs found in the web content.
     /// </summary>
     public IReadOnlyCollection<string> Images { get; init; }
-    
+
     public IReadOnlyCollection<Link> Links { get; init; }
 
     /// <summary>
@@ -72,13 +72,14 @@ public record WebPage
     {
         get
         {
-            
-            
             return Metadata
                 .Where(o => o.Key.StartsWith("og:", StringComparison.InvariantCultureIgnoreCase))
                 .ToImmutableList();
         }
     }
 
+    /// <summary>
+    /// Gets or initializes the source information of the web content.
+    /// </summary>
     public Source? Source { get; init; }
 }

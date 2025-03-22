@@ -6,8 +6,13 @@ using JetBrains.Annotations;
 namespace X.Web.MetaExtractor;
 
 /// <summary>
-/// Interface for loading web page content from a specified URI.
+/// Defines an interface for loading web content from specified URIs.
 /// </summary>
+/// <remarks>
+/// This interface provides methods for retrieving raw content from web pages asynchronously
+/// with optional cancellation support. Implementations should handle HTTP requests and
+/// return the raw string content of the requested resource.
+/// </remarks>
 [PublicAPI]
 public interface IContentLoader
 {
