@@ -14,12 +14,9 @@ public class HttpClientContentLoader : IContentLoader
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
 
-    public HttpClientContentLoader(IHttpClientFactory httpClientFactory)
-        : this(httpClientFactory, "PageContentLoaderHttpClient")
-    {
-    }
-
-    public HttpClientContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
+    public HttpClientContentLoader(
+        IHttpClientFactory httpClientFactory,
+        string httpClientName = "PageContentLoaderHttpClient")
     {
         _httpClientName = httpClientName;
         _httpClientFactory = httpClientFactory;
@@ -59,18 +56,17 @@ public class HttpClientContentLoader : IContentLoader
 
     private static async Task<string> ReadFromStandardStream(Stream stream)
     {
-        using (var reader = new StreamReader(stream))
-        {
-            return await reader.ReadToEndAsync();
-        }
+        using var reader = new StreamReader(stream);
+
+        return await reader.ReadToEndAsync();
     }
 
     private static async Task<string> ReadFromGzipStream(Stream stream)
     {
-        using (var deflateStream = new GZipStream(stream, CompressionMode.Decompress))
-        using (var reader = new StreamReader(deflateStream))
-        {
-            return await reader.ReadToEndAsync();
-        }
+        await using var deflateStream = new GZipStream(stream, CompressionMode.Decompress);
+
+        using var reader = new StreamReader(deflateStream);
+
+        return await reader.ReadToEndAsync();
     }
 }
