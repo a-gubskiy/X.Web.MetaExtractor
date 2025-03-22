@@ -8,7 +8,7 @@ namespace X.Web.MetaExtractor;
 /// Interface for loading web page content from a specified URI.
 /// </summary>
 [PublicAPI]
-public interface IPageContentLoader
+public interface IContentLoader
 {
     /// <summary>
     /// Loads the content of a web page from the specified URI with cancellation support.

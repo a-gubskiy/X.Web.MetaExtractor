@@ -5,7 +5,7 @@
         <Description>X.Web.MetaExtractor allow extract meta information from any page url</Description>
 
         <LangVersion>default</LangVersion>
-        <TargetFrameworks>net6.0;net8.0;</TargetFrameworks>
+        <TargetFrameworks>net8.0;</TargetFrameworks>
 
         <PackageTags>flurl web metadata</PackageTags>
 

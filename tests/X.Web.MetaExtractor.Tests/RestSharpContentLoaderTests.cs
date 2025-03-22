@@ -5,12 +5,12 @@ using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;
 
-public class RestSharpPageContentLoaderTests
+public class RestSharpContentLoaderTests
 {
     [Fact]
     public async Task Test()
     {
-        IPageContentLoader contentLoader = new RestSharpPageContentLoader();
+        IContentLoader contentLoader = new RestSharpContentLoader();
         
         var task1 = contentLoader.LoadPageContent(new Uri("http://andrew.gubskiy.com/"));
         var task2 = contentLoader.LoadPageContent(new Uri("http://torf.tv/"));

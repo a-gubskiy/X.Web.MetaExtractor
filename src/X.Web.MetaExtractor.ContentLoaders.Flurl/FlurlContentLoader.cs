@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 namespace X.Web.MetaExtractor.ContentLoaders.Flurl;
 
 [PublicAPI]
-public class FlurlPageContentLoader : IPageContentLoader
+public class FlurlContentLoader : IContentLoader
 {
     public async Task<string> LoadPageContent(Uri uri, CancellationToken cancellationToken)
     {

@@ -1,16 +1,16 @@
 using System;
 using System.Threading.Tasks;
-using X.Web.MetaExtractor.ContentLoaders.HttpClient;
+using X.Web.MetaExtractor.ContentLoaders.Flurl;
 using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;
 
-public class HttpClientPageContentLoaderTests
+public class FlurlContentLoaderTests
 {
     [Fact]
     public async Task Test()
     {
-        IPageContentLoader contentLoader = new HttpClientPageContentLoader();
+        IContentLoader contentLoader = new FlurlContentLoader();
         
         var task1 = contentLoader.LoadPageContent(new Uri("http://andrew.gubskiy.com/"));
         var task2 = contentLoader.LoadPageContent(new Uri("http://torf.tv/"));
@@ -32,5 +32,4 @@ public class HttpClientPageContentLoaderTests
         Assert.NotNull(html4);
         Assert.NotNull(html5);
     }
-       
 }

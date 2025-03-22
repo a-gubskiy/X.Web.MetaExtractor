@@ -10,7 +10,7 @@ public class FsHttpPageContentLoaderTests
     [Fact]
     public async Task Test()
     {
-        IPageContentLoader contentLoader = new FsHttpPageContentLoader();
+        IContentLoader contentLoader = new FsHttpPageContentLoader();
         
         var task1 = contentLoader.LoadPageContent(new Uri("http://andrew.gubskiy.com/"));
         var task2 = contentLoader.LoadPageContent(new Uri("http://torf.tv/"));

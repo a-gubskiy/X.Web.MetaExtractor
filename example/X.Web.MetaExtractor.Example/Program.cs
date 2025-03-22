@@ -2,7 +2,7 @@
 using X.Web.MetaExtractor.ContentLoaders.Flurl;
 using X.Web.MetaExtractor.LanguageDetectors;
 
-IPageContentLoader contentLoader = new FlurlPageContentLoader();
+IContentLoader contentLoader = new FlurlContentLoader();
 ILanguageDetector languageDetector = new LanguageDetector();
 string defaultImage = "https://example.com/example.jpg";
 

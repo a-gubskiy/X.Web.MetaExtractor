@@ -9,23 +9,23 @@ using JetBrains.Annotations;
 namespace X.Web.MetaExtractor.ContentLoaders.HttpClient;
 
 [PublicAPI]
-public class HttpClientPageContentLoader : IPageContentLoader
+public class HttpClientContentLoader : IContentLoader
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
 
-    public HttpClientPageContentLoader(IHttpClientFactory httpClientFactory)
+    public HttpClientContentLoader(IHttpClientFactory httpClientFactory)
         : this(httpClientFactory, "PageContentLoaderHttpClient")
     {
     }
 
-    public HttpClientPageContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
+    public HttpClientContentLoader(IHttpClientFactory httpClientFactory, string httpClientName)
     {
         _httpClientName = httpClientName;
         _httpClientFactory = httpClientFactory;
     }
 
-    public HttpClientPageContentLoader()
+    public HttpClientContentLoader()
         : this(new HttpClientFactory())
     {
     }

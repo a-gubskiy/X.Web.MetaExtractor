@@ -32,10 +32,10 @@ public class ExtractorTests
     [Fact]
     public async Task TestExtractLanguageData()
     {
-        IPageContentLoader pageContentLoader = new RestSharpPageContentLoader();
+        IContentLoader contentLoader = new RestSharpContentLoader();
         
         var languageDetector = new LanguageDetector();
-        IExtractor extractor = new Extractor("", pageContentLoader, languageDetector);
+        IExtractor extractor = new Extractor("", contentLoader, languageDetector);
           
         var metaData = await extractor.Extract(new Uri("https://diepresse.com/home/panorama/wien/5386805/Polizist-attackiert_Parlament-verstaerkt-Bewachung"));
             
@@ -45,10 +45,10 @@ public class ExtractorTests
     [Fact]
     public async Task TestExtractMetaTags()
     {
-        IPageContentLoader pageContentLoader = new RestSharpPageContentLoader();
+        IContentLoader contentLoader = new RestSharpContentLoader();
         
         var languageDetector = new LanguageDetector();
-        IExtractor extractor = new Extractor("", pageContentLoader, languageDetector);
+        IExtractor extractor = new Extractor("", contentLoader, languageDetector);
           
         var metaData1 = await extractor.Extract(new Uri("https://codeshare.co.uk/blog/how-to-scrape-meta-data-from-a-url-using-htmlagilitypack-in-c/"));
         var metaData2 = await extractor.Extract(new Uri("https://diepresse.com/home/techscience/5526578/Daten-sichern_WhatsApp-loescht-am-12-November-Chatverlaeufe"));
