@@ -6,16 +6,19 @@
 
 ## Breaking Changes
 
-- **Metadata class was changes**: The `Content` field has been removed from the `Metadata` class. Ensure to update your code to reflect this change if you were using the `Content` field.
-- **Description Extraction Logic**: The `Extractor` class now only extracts the description from meta tags, without attempting to parse the content of the page. Adjust your implementation if it relied on content parsing for the description.
+- **Metadata class was changed**: The `Content` field has been removed from the `Metadata` class. Ensure to update your code to reflect this change if you were using the `Content` field.
+- **Description Extraction Logic**: The `Extractor` class now only extracts the description from meta tags, without attempting to parse the content of the page.
+- **New WebPage Model**: The library now returns a `WebPage` model with comprehensive information including links found on the page.
+- **Link Extraction**: Added support for extracting and processing all hyperlinks from web pages.
 
 ## Features
 
 - Extract meta information from any web page URL.
+- Extract and process hyperlinks from web pages.
 - Support for multiple HTTP libraries:
-    - Flurl
-    - FsHttp
-    - RestSharp
+  - Flurl
+  - FsHttp
+  - RestSharp
 - Detect the language of the page content.
 
 ## Installation
@@ -36,58 +39,86 @@ using X.Web.MetaExtractor.ContentLoaders;
 using X.Web.MetaExtractor.LanguageDetectors;
 
 // Create instances of the necessary components
-IPageContentLoader contentLoader = new FlurlPageContentLoader();
+IContentLoader contentLoader = new FlurlContentLoader();
 ILanguageDetector languageDetector = new LanguageDetector();
 string defaultImage = "https://example.com/example.jpg";
 
 // Create an instance of the Extractor
 IExtractor extractor = new Extractor(defaultImage, contentLoader, languageDetector);
 
-// Extract meta information from a URL
-var metaInfo = await extractor.ExtractAsync( new Uri("https://example.com"));
+// Extract information from a URL
+var webPage = await extractor.Extract(new Uri("https://example.com"), CancellationToken.None);
 
-// Display the extracted meta information
-Console.WriteLine($"Title: {metaInfo.Title}");
-Console.WriteLine($"Description: {metaInfo.Description}");
-Console.WriteLine($"Keywords: {metaInfo.Keywords}");
-Console.WriteLine($"Language: {metaInfo.Language}");
+// Display the extracted information
+Console.WriteLine($"Title: {webPage.Title}");
+Console.WriteLine($"Description: {webPage.Description}");
+Console.WriteLine($"Keywords: {webPage.Keywords}");
+Console.WriteLine($"Language: {webPage.Language}");
+
+// Process links
+if (webPage.Links != null)
+{
+    Console.WriteLine($"Found {webPage.Links.Count} links:");
+    foreach (var link in webPage.Links)
+    {
+        Console.WriteLine($"- {link.Title}: {link.Value}");
+    }
+}
 ```
 
 ## Interfaces and Classes
 
 ### IExtractor
 
-`IExtractor` defines the interface for extracting meta information.
+`IExtractor` defines the interface for extracting web page information, returning a comprehensive `WebPage` model.
 
 ### ILanguageDetector
 
 `ILanguageDetector` defines the interface for detecting the language of the page content.
 
-### IPageContentLoader
+### IContentLoader
 
-`IPageContentLoader` defines the interface for loading the content of a web page.
+`IContentLoader` defines the interface for loading the content of a web page asynchronously.
 
-### Metadata
+### WebPage
 
-`Metadata` is a class that holds the meta information of a web page, including the title, description, keywords, and language.
+`WebPage` is the main model containing extracted information from a web page, including metadata, links, and source information.
+
+### Link
+
+`Link` is a record that represents a hyperlink extracted from HTML content with Title and Value properties.
+
+### Source
+
+`Source` is a record that contains information about the origin of web content, including the original URL and raw page content.
+
+## Extractors
+
+The library architecture supports multiple specialized extractors that work together to build a complete representation of a web page:
+
+* **MetaDocumentExtractor** - Extracts metadata from HTML <meta> tags
+* **OpenGraphDocumentExtractor** - Extracts Open Graph protocol metadata
+* **TitleDocumentExtractor** - Extracts the page title
+* **ImageDocumentExtractor** - Extracts image URLs from the document
+* **LinksDocumentExtractor** – Extracts all hyperlinks from HTML documents, converting them to strongly-typed `Link` objects.
 
 ## Content Loaders
 
 ### Flurl
 
-`X.Web.MetaExtractor.ContentLoaders.Flurl` provides a content loader using the Flurl HTTP library, enabling efficient and fluent HTTP request handling for meta information extraction from any page URL.
+`X.Web.MetaExtractor.ContentLoaders.Flurl` provides a content loader using the Flurl HTTP library.
 
 ### FsHttp
 
-`X.Web.MetaExtractor.ContentLoaders.FsHttp` leverages the FsHttp library to load content, facilitating robust and type-safe HTTP request execution for extracting meta information from any page URL.
+`X.Web.MetaExtractor.ContentLoaders.FsHttp` leverages the FsHttp library to load content.
 
 ### HttpClient
 
-`X.Web.MetaExtractor.ContentLoaders.HttpClient` utilizes the HttpClient class to load content, offering a flexible and reliable approach to perform HTTP requests for meta information extraction from any page URL.
+`X.Web.MetaExtractor.ContentLoaders.HttpClient` utilizes the HttpClient class to load content.
 
 ### RestSharp
 
-`X.Web.MetaExtractor.ContentLoaders.RestSharp` uses the RestSharp library for content loading, providing an intuitive and powerful way to handle HTTP requests for extracting meta information from any page URL.
+`X.Web.MetaExtractor.ContentLoaders.RestSharp` uses the RestSharp library for content loading.
 
 ## Contributing
 
@@ -95,4 +126,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/ernado-x/X.Web.MetaExtractor/blob/master/LICENSE) file for more details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/a-gubskiy/X.Web.MetaExtractor/blob/master/LICENSE) file for more details.

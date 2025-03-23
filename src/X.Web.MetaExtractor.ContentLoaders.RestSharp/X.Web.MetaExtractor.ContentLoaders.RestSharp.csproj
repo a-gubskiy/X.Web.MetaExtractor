@@ -5,7 +5,7 @@
         <Description>X.Web.MetaExtractor.ContentLoaders.RestSharp uses the RestSharp library for content loading, providing an intuitive and powerful way to handle HTTP requests for extracting meta information from any page URL.</Description>
 
         <LangVersion>default</LangVersion>
-        <TargetFrameworks>net6.0;net8.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 
         <PackageTags>restsharp web metadata</PackageTags>
 

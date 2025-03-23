@@ -2,7 +2,7 @@
 using X.Web.MetaExtractor.ContentLoaders.Flurl;
 using X.Web.MetaExtractor.LanguageDetectors;
 
-IPageContentLoader contentLoader = new FlurlPageContentLoader();
+IContentLoader contentLoader = new FlurlContentLoader();
 ILanguageDetector languageDetector = new LanguageDetector();
 string defaultImage = "https://example.com/example.jpg";
 
@@ -11,14 +11,14 @@ IExtractor extractor = new Extractor(defaultImage, contentLoader, languageDetect
 
 // Extract meta information from a URL
 var uri = new Uri("https://andrew.gubskiy.com/content/item/about");
-var metaInfo = await extractor.ExtractAsync(uri);
+var page = await extractor.Extract(uri);
 
 Console.Clear();
 
 // Display the extracted meta information
-Console.WriteLine($"Url: {metaInfo.Url}");
-Console.WriteLine($"Title: {metaInfo.Title}");
-Console.WriteLine($"Description: {metaInfo.Description}");
-Console.WriteLine($"Keywords: {string.Join(", ", metaInfo.Keywords)}");
-Console.WriteLine($"Image: {metaInfo.Images.FirstOrDefault()}");
-Console.WriteLine($"Language: {metaInfo.Language}");
+Console.WriteLine($"Url: {page.Source!.Url}");
+Console.WriteLine($"Title: {page.Title}");
+Console.WriteLine($"Description: {page.Description}");
+Console.WriteLine($"Keywords: {string.Join(", ", page.Keywords)}");
+Console.WriteLine($"Image: {page.Images.FirstOrDefault()}");
+Console.WriteLine($"Language: {page.Language}");

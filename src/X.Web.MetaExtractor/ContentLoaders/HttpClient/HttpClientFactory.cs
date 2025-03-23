@@ -12,7 +12,7 @@ public class HttpClientFactory : IHttpClientFactory
 
     public System.Net.Http.HttpClient CreateClient(string name) => Clients.GetOrAdd(name, Create);
 
-    private static System.Net.Http.HttpClient Create(string key)
+    protected virtual System.Net.Http.HttpClient Create(string key)
     {
         var handler = new HttpClientHandler { AllowAutoRedirect = true };
 

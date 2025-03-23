@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using RestSharp;
@@ -7,9 +8,9 @@ using RestSharp;
 namespace X.Web.MetaExtractor.ContentLoaders.RestSharp;
 
 [PublicAPI]
-public class RestSharpPageContentLoader : IPageContentLoader
+public class RestSharpContentLoader : IContentLoader
 {
-    public async Task<string> LoadPageContentAsync(Uri uri)
+    public async Task<string> Load(Uri uri, CancellationToken cancellationToken)
     {
         if (uri == null)
         {
@@ -19,13 +20,13 @@ public class RestSharpPageContentLoader : IPageContentLoader
         var client = new RestClient();
         var request = new RestRequest(uri, Method.Get);
 
-        var response = await client.ExecuteAsync(request);
+        var response = await client.ExecuteAsync(request, cancellationToken);
 
         if (!response.IsSuccessful)
         {
             throw new HttpRequestException($"Error fetching content from {uri}. Status code: {response.StatusCode}");
         }
 
-        return response.Content;
+        return response.Content ?? string.Empty;
     }
 }
