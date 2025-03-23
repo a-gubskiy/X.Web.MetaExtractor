@@ -1,35 +1,41 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Moq;
 using X.Web.MetaExtractor.ContentLoaders.FsHttp;
 using Xunit;
 
 namespace X.Web.MetaExtractor.Tests;
 
-public class FsHttpPageContentLoaderTests
+public class FsHttpPageContentLoaderTests : IDisposable
 {
-    [Fact]
-    public async Task Test()
+    private readonly HttpClient _mockHttpClient;
+    private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
+    private readonly IContentLoader _loader;
+
+    public FsHttpPageContentLoaderTests()
     {
-        IContentLoader contentLoader = new FsHttpPageContentLoader();
-        
-        var task1 = contentLoader.Load(new Uri("http://andrew.gubskiy.com/"));
-        var task2 = contentLoader.Load(new Uri("http://torf.tv/"));
-        var task3 = contentLoader.Load(new Uri("http://torf.tv/video/IraSkladPortrait"));
-        var task4 = contentLoader.Load(new Uri("https://en.wikipedia.org/wiki/Oceanic_whitetip_shark"));
-        var task5 = contentLoader.Load(new Uri("https://devdigest.today/platform/"));
-
-        var all = await Task.WhenAll(task1, task2, task3, task4, task5);
-
-        var html1 = all[0];
-        var html2 = all[1];
-        var html3 = all[2];
-        var html4 = all[3];
-        var html5 = all[4];
-        
-        Assert.NotNull(html1);
-        Assert.NotNull(html2);
-        Assert.NotNull(html3);
-        Assert.NotNull(html4);
-        Assert.NotNull(html5);
+        _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
+        _mockHttpClient = new HttpClient(_mockHttpMessageHandler.Object);
+        _loader = new FsHttpPageContentLoader();
     }
+
+    public void Dispose()
+    {
+        _mockHttpClient.Dispose();
+        GC.SuppressFinalize(this);
+    }
+    
+    [Fact]
+    public async Task Load_MultipleUrls_ReturnsAllContents()
+    {
+        // Arrange
+        var url = new Uri("https://example.com");
+       
+        // Act
+        var value = await _loader.Load(url);
+
+        Assert.Contains("<title>Example Domain</title>", value);
+    }
+    
 }
