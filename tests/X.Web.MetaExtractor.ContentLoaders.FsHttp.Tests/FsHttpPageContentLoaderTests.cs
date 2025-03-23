@@ -2,21 +2,20 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Moq;
-using X.Web.MetaExtractor.ContentLoaders.FsHttp;
 using Xunit;
 
-namespace X.Web.MetaExtractor.Tests;
+namespace X.Web.MetaExtractor.ContentLoaders.FsHttp.Tests;
 
 public class FsHttpPageContentLoaderTests : IDisposable
 {
-    private readonly HttpClient _mockHttpClient;
+    private readonly System.Net.Http.HttpClient _mockHttpClient;
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
     private readonly IContentLoader _loader;
 
     public FsHttpPageContentLoaderTests()
     {
         _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _mockHttpClient = new HttpClient(_mockHttpMessageHandler.Object);
+        _mockHttpClient = new System.Net.Http.HttpClient(_mockHttpMessageHandler.Object);
         _loader = new FsHttpPageContentLoader();
     }
 

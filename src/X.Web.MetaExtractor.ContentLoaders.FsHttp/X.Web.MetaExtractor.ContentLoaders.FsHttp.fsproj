@@ -5,7 +5,7 @@
         <Description>X.Web.MetaExtractor.ContentLoaders.FsHttp leverages the FsHttp library to load content, facilitating robust and type-safe HTTP request execution for extracting meta information from any page URL.</Description>
 
         <LangVersion>default</LangVersion>
-        <TargetFrameworks>net8.0</TargetFrameworks>
+        <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 
         <PackageTags>fshttp web metadata</PackageTags>
 

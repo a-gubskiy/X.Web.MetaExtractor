@@ -1,10 +1,8 @@
 using System;
-using System.Net;
 using System.Threading.Tasks;
-using X.Web.MetaExtractor.ContentLoaders.RestSharp;
 using Xunit;
 
-namespace X.Web.MetaExtractor.Tests;
+namespace X.Web.MetaExtractor.ContentLoaders.RestSharp.Tests;
 
 public class RestSharpContentLoaderTests
 {

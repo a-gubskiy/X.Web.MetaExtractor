@@ -3,10 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Testing;
-using X.Web.MetaExtractor.ContentLoaders.Flurl;
 using Xunit;
 
-namespace X.Web.MetaExtractor.Tests;
+namespace X.Web.MetaExtractor.ContentLoaders.Flurl.Tests;
 
 public class FlurlContentLoaderTests : IDisposable
 {
