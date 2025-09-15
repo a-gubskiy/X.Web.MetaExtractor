@@ -26,7 +26,7 @@
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2025.2.2" PrivateAssets="All" />
-        <PackageReference Include="FsHttp" Version="15.0.1" />
+        <PackageReference Include="FsHttp" Version="15.0.2" />
     </ItemGroup>  
    
     <ItemGroup>      
