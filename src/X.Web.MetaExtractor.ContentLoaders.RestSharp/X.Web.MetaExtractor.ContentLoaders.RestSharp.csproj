@@ -26,7 +26,7 @@
 
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" PrivateAssets="All" />
-        <PackageReference Include="RestSharp" Version="113.0.0" />
+        <PackageReference Include="RestSharp" Version="113.1.0" />
     </ItemGroup>
 
     <ItemGroup>
