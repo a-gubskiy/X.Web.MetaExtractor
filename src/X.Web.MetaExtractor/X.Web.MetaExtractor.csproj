@@ -26,6 +26,6 @@
         <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" PrivateAssets="All" />
         <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.2" />
-        <PackageReference Include="System.Collections.Immutable" Version="10.0.2" />
+        <PackageReference Include="System.Collections.Immutable" Version="10.0.3" />
     </ItemGroup>
 </Project>
