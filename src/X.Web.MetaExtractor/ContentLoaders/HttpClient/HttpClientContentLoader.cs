@@ -11,19 +11,26 @@ namespace X.Web.MetaExtractor.ContentLoaders.HttpClient;
 [PublicAPI]
 public class HttpClientContentLoader : IContentLoader
 {
+    /// <summary>
+    /// Name of the HTTP client requested from <see cref="IHttpClientFactory"/> by default.
+    /// </summary>
+    public const string DefaultHttpClientName = "PageContentLoaderHttpClient";
+
+    private static readonly HttpClientFactory SharedHttpClientFactory = new();
+
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly string _httpClientName;
 
     public HttpClientContentLoader(
         IHttpClientFactory httpClientFactory,
-        string httpClientName = "PageContentLoaderHttpClient")
+        string httpClientName = DefaultHttpClientName)
     {
         _httpClientName = httpClientName;
         _httpClientFactory = httpClientFactory;
     }
 
     public HttpClientContentLoader()
-        : this(new HttpClientFactory())
+        : this(SharedHttpClientFactory)
     {
     }
 

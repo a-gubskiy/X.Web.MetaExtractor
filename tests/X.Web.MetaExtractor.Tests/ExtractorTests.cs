@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using X.Web.MetaExtractor.ContentLoaders.RestSharp;
+using X.Web.MetaExtractor.ContentLoaders.HttpClient;
 using X.Web.MetaExtractor.LanguageDetectors;
 using Xunit;
 
@@ -33,7 +33,7 @@ public class ExtractorTests
 
     public ExtractorTests()
     {
-        _contentLoader = new RestSharpContentLoader();
+        _contentLoader = new HttpClientContentLoader();
         _languageDetector = new LanguageDetector();
     }
 
