@@ -1,28 +1,40 @@
-using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
 using JetBrains.Annotations;
 
 namespace X.Web.MetaExtractor.ContentLoaders.HttpClient;
 
+/// <summary>
+/// Minimal <see cref="IHttpClientFactory"/> for use without dependency injection.
+/// Creates one <see cref="System.Net.Http.HttpClient"/> per name and reuses it,
+/// so keep a single factory instance for the lifetime of the application.
+/// </summary>
 [PublicAPI]
 public class HttpClientFactory : IHttpClientFactory
 {
-    private static readonly ConcurrentDictionary<string, System.Net.Http.HttpClient> Clients = new();
+    private readonly ConcurrentDictionary<string, System.Net.Http.HttpClient> _clients = new();
 
-    public System.Net.Http.HttpClient CreateClient(string name) => Clients.GetOrAdd(name, Create);
+    public HttpClientFactory()
+        : this(new HttpClientContentLoaderOptions())
+    {
+    }
+
+    public HttpClientFactory(HttpClientContentLoaderOptions options)
+    {
+        Options = options;
+    }
+
+    protected HttpClientContentLoaderOptions Options { get; }
+
+    public System.Net.Http.HttpClient CreateClient(string name) => _clients.GetOrAdd(name, Create);
 
     protected virtual System.Net.Http.HttpClient Create(string key)
     {
         var handler = new HttpClientHandler { AllowAutoRedirect = true };
 
-        var client = new System.Net.Http.HttpClient(handler) { Timeout = TimeSpan.FromSeconds(5) };
+        var client = new System.Net.Http.HttpClient(handler);
 
-        client.DefaultRequestHeaders.TryAddWithoutValidation("Accept", "text/html,application/xhtml+xml,application/xml");
-        client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Encoding", "gzip, deflate");
-        client.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", "curl/7.54.0 (X.Web.MetaExtractor)");
-        client.DefaultRequestHeaders.TryAddWithoutValidation("Accept-Charset", "UTF-8");
-        client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "text/html; charset=UTF-8");
+        Options.Apply(client);
 
         return client;
     }
