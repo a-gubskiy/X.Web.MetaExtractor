@@ -14,7 +14,7 @@
         <Version>3.0.0</Version>
 
         <RepositoryType>git</RepositoryType>
-        <RepositoryUrl>https://github.com/dncuug/X.Web.MetaExtractor.git</RepositoryUrl>
+        <RepositoryUrl>https://github.com/a-gubskiy/X.Web.MetaExtractor.git</RepositoryUrl>
         <PackageProjectUrl>https://andrew.gubskiy.com/open-source</PackageProjectUrl>        
     </PropertyGroup>
 
