@@ -9,6 +9,10 @@
 
 ## Breaking Changes
 
+### 4.0
+
+- **Target frameworks**: the package now targets `net10.0` and `net11.0`; `net8.0` is no longer supported. On `net10.0` it depends on `Microsoft.Extensions.*` 10.x, on `net11.0` on 11.x.
+
 ### 3.0
 
 - **Content loader packages are discontinued**: `X.Web.MetaExtractor.ContentLoaders.Flurl`, `X.Web.MetaExtractor.ContentLoaders.FsHttp` and `X.Web.MetaExtractor.ContentLoaders.RestSharp` are no longer published. Use the built-in `HttpClientContentLoader` or implement `IContentLoader` yourself (see [Custom Content Loader](#custom-content-loader)).
