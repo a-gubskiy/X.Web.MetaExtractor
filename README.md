@@ -1,10 +1,11 @@
 # X.Web.MetaExtractor
 
-[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor_on_GitHub-ff7f00?logo=github&logoColor=white&style=for-the-badge)](https://github.com/sponsors/a-gubskiy)
-[![Subscribe on X](https://img.shields.io/badge/Subscribe_on_X-000000?logo=x&logoColor=white&style=for-the-badge)](https://x.com/andrew_gubskiy)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/X.Web.MetaExtractor?style=for-the-badge&label=NuGet%20Downloads&color=004880&logo=nuget&logoColor=white)](https://www.nuget.org/packages/X.Web.MetaExtractor)
+[![NuGet Version](https://img.shields.io/nuget/v/X.Web.MetaExtractor?style=for-the-badge&label=NuGet&color=004880&logo=nuget&logoColor=white)](https://www.nuget.org/packages/X.Web.MetaExtractor)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/X.Web.MetaExtractor?style=for-the-badge&label=Downloads&color=004880&logo=nuget&logoColor=white)](https://www.nuget.org/packages/X.Web.MetaExtractor)
+[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor_on_GitHub-ff7f00?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sponsors/a-gubskiy)
+[![Subscribe on X](https://img.shields.io/badge/Subscribe_on_X-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/andrew_gubskiy)
 
-**X.Web.MetaExtractor** is a powerful library that allows you to extract meta information from any web page URL. It provides a variety of content loaders to handle HTTP requests using different libraries.
+**X.Web.MetaExtractor** is a powerful library that allows you to extract meta information from any web page URL. It ships with a built-in `HttpClient`-based content loader, and you can plug in your own by implementing `IContentLoader`.
 
 ## Breaking Changes
 
@@ -38,6 +39,8 @@ To install the library, use the following command:
 dotnet add package X.Web.MetaExtractor
 ```
 
+Targets `net10.0` and `net11.0`.
+
 ## Usage
 
 Here is a basic example of how to use the `X.Web.MetaExtractor` library:
@@ -48,7 +51,7 @@ using X.Web.MetaExtractor;
 IExtractor extractor = new Extractor("https://example.com/example.jpg");
 
 // Extract information from a URL
-var webPage = await extractor.Extract(new Uri("https://example.com"), CancellationToken.None);
+var webPage = await extractor.Extract(new Uri("https://example.com"));
 
 // Display the extracted information
 Console.WriteLine($"Title: {webPage.Title}");
@@ -98,7 +101,7 @@ public class PreviewService(IExtractor extractor) { ... }
 
 ### WebPage
 
-`WebPage` is the main model containing extracted information from a web page, including metadata, links, and source information.
+`WebPage` is the main model containing extracted information from a web page: `Title`, `Description`, `Language`, `Images`, `Keywords`, `Links`, `Metadata`, `OpenGraph` (the `og:*` entries of `Metadata`) and `Source`.
 
 ### Link
 
@@ -112,11 +115,12 @@ public class PreviewService(IExtractor extractor) { ... }
 
 The library architecture supports multiple specialized extractors that work together to build a complete representation of a web page:
 
-* **MetaDocumentExtractor** - Extracts metadata from HTML <meta> tags
-* **OpenGraphDocumentExtractor** - Extracts Open Graph protocol metadata
-* **TitleDocumentExtractor** - Extracts the page title
-* **ImageDocumentExtractor** - Extracts image URLs from the document
-* **LinksDocumentExtractor** – Extracts all hyperlinks from HTML documents, converting them to strongly-typed `Link` objects.
+* **TitleHtmlDocumentExtractor** - Extracts the page title (`og:title` first, then `<title>`)
+* **DescriptionHtmlDocumentExtractor** - Extracts the description (`og:description` first, then `<meta name="description">`)
+* **KeywordsHtmlDocumentExtractor** - Extracts keywords from `<meta name="keywords">`
+* **MetaHtmlDocumentExtractor** - Extracts metadata from HTML `<meta>` tags, including Open Graph properties
+* **ImageHtmlDocumentExtractor** - Extracts image URLs from the document
+* **LinksHtmlDocumentExtractor** - Extracts all hyperlinks from HTML documents, converting them to strongly-typed `Link` objects
 
 ## Content Loaders
 
@@ -125,6 +129,10 @@ The library architecture supports multiple specialized extractors that work toge
 `HttpClientContentLoader` is the default loader and is included in the main package. Without dependency injection it reuses a single shared `HttpClient`. To change its settings, pass your own factory and keep it for the lifetime of the application:
 
 ```csharp
+using X.Web.MetaExtractor;
+using X.Web.MetaExtractor.ContentLoaders.HttpClient;
+using X.Web.MetaExtractor.LanguageDetectors;
+
 var factory = new HttpClientFactory(new HttpClientContentLoaderOptions
 {
     Timeout = TimeSpan.FromSeconds(10)
@@ -151,4 +159,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/a-gubskiy/X.Web.MetaExtractor/blob/master/LICENSE) file for more details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/a-gubskiy/X.Web.MetaExtractor/blob/master/LICENSE.md) file for more details.

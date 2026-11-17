@@ -10,7 +10,7 @@
 
         <Nullable>enable</Nullable>
 
-        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,8 +25,16 @@
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2026.2.0" PrivateAssets="All" />
         <PackageReference Include="HtmlAgilityPack" Version="1.13.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.14" />
-        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.12" />
-        <PackageReference Include="System.Collections.Immutable" Version="11.0.0" />
+    </ItemGroup>
+
+    <!-- Keep LTS consumers (.NET 10, .NET Standard) on Microsoft.Extensions 10.x;
+         only the net11.0 build depends on Microsoft.Extensions 11.x. -->
+    <ItemGroup Condition="'$(TargetFramework)' != 'net11.0'">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.15" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net11.0'">
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="11.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="11.0.0" />
     </ItemGroup>
 </Project>
