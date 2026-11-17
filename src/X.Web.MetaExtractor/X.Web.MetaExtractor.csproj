@@ -27,7 +27,7 @@
         <PackageReference Include="HtmlAgilityPack" Version="1.13.1" />
     </ItemGroup>
 
-    <!-- Keep LTS consumers (.NET 10, .NET Standard) on Microsoft.Extensions 10.x;
+    <!-- Keep LTS consumers (.NET 10) on Microsoft.Extensions 10.x;
          only the net11.0 build depends on Microsoft.Extensions 11.x. -->
     <ItemGroup Condition="'$(TargetFramework)' != 'net11.0'">
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
